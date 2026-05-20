@@ -1,0 +1,13 @@
+:root {
+  --background: #fffefa;
+  --page-background: #efefec;
+  --text: #1f1f1f;
+  --muted: #5f5f5d;
+  --line: #2a2a2a;
+  --menu-max-width: 460px;
+  --page-padding: clamp(20px, 6.4vw, 32px);
+  --section-gap: 64px;
+  --item-gap: 15px;
+  --thin-line: 1px;
+  --dashed-line: 1px dashed var(--line);
+}
