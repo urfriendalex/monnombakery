@@ -9,15 +9,48 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
       "(prefers-reduced-motion: reduce)",
     );
     const coarsePointer = window.matchMedia("(pointer: coarse)");
+    const useLenis = !reducedMotion.matches && !coarsePointer.matches;
 
-    if (reducedMotion.matches || coarsePointer.matches) {
-      return;
+    const lenis = useLenis
+      ? new Lenis({
+          anchors: true,
+          autoRaf: true,
+        })
+      : null;
+
+    const scrollToPosition = (event: Event) => {
+      const { top, immediate = false, onComplete } = (
+        event as CustomEvent<{
+          top: number;
+          immediate?: boolean;
+          onComplete?: () => void;
+        }>
+      ).detail;
+
+      if (lenis) {
+        lenis.scrollTo(top, {
+          immediate,
+          force: true,
+          programmatic: true,
+          onComplete: onComplete ? () => onComplete() : undefined,
+        });
+        return;
+      }
+
+      window.scrollTo({
+        top,
+        behavior: immediate ? "instant" : "smooth",
+      });
+      onComplete?.();
+    };
+
+    window.addEventListener("smooth-scroll:scroll-to", scrollToPosition);
+
+    if (!lenis) {
+      return () => {
+        window.removeEventListener("smooth-scroll:scroll-to", scrollToPosition);
+      };
     }
-
-    const lenis = new Lenis({
-      anchors: true,
-      autoRaf: true,
-    });
 
     const updateScrollState = (event: Event) => {
       const { stopped } = (event as CustomEvent<{ stopped: boolean }>).detail;
@@ -33,6 +66,7 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
 
     return () => {
       window.removeEventListener("smooth-scroll:set-stopped", updateScrollState);
+      window.removeEventListener("smooth-scroll:scroll-to", scrollToPosition);
       lenis.destroy();
     };
   }, []);

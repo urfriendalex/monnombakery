@@ -15,7 +15,8 @@ body {
   min-width: 320px;
   margin: 0;
   background:
-    linear-gradient(90deg, #f4f4f2 0 1px, transparent 1px) 50% 0 / var(--menu-max-width) 100%,
+    linear-gradient(90deg, #f4f4f2 0 1px, transparent 1px) 50% 0 /
+      var(--menu-max-width) 100%,
     var(--page-background);
   color: var(--text);
   font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
@@ -165,7 +166,9 @@ img {
   letter-spacing: 0.06em;
   padding: 0 0 2px;
   text-transform: uppercase;
-  transition: color 160ms var(--ease-out), transform 160ms var(--ease-out);
+  transition:
+    color 160ms var(--ease-out),
+    transform 160ms var(--ease-out);
 }
 
 .category-link[aria-current="true"] {
@@ -243,6 +246,22 @@ img {
 
 .menu-item[data-viewer-active="true"] + .menu-item {
   border-top: var(--active-dashed-line);
+}
+
+.menu-item[data-viewer-active="true"] .item-name,
+.menu-item[data-viewer-active="true"] .item-description,
+.menu-item[data-viewer-active="true"] .price,
+.menu-item[data-viewer-active="true"] .secondary-price,
+.menu-item[data-viewer-active="true"] .photo-trigger {
+  color: var(--text-intense);
+}
+
+.menu-item[data-viewer-active="true"] .photo-trigger {
+  border-bottom-color: var(--text-intense);
+}
+
+.menu-item[data-photo-preview-id] {
+  cursor: pointer;
 }
 
 .item-copy {
@@ -324,8 +343,8 @@ img {
 .viewer-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(22, 22, 20, 0);
-  transition: background 480ms var(--ease-out);
+  background-color: rgba(22, 22, 20, 0);
+  transition: background-color 480ms var(--ease-out);
 }
 
 .viewer-stage {
@@ -334,15 +353,11 @@ img {
   bottom: 8px;
   width: 144px;
   pointer-events: auto;
-  transition:
-    left 560ms var(--ease-out),
-    bottom 560ms var(--ease-out),
-    width 560ms var(--ease-out),
-    transform 560ms var(--ease-out);
 }
 
-.image-viewer.is-dismissed:not(.is-open) .viewer-stage {
+.image-viewer.is-dismissed:not(.is-open):not(.is-flipping) .viewer-stage {
   transform: translateX(calc(-100% - 24px));
+  transition: transform 560ms var(--ease-out);
 }
 
 .viewer-image-button {
@@ -355,6 +370,12 @@ img {
   background: transparent;
   cursor: zoom-in;
   touch-action: pan-y;
+  outline: 1px solid rgba(0, 0, 0, 0.1);
+  transition: transform 150ms var(--ease-out);
+}
+
+.image-viewer:not(.is-open) .viewer-image-button:active {
+  transform: scale(0.96);
 }
 
 .viewer-image-layer {
@@ -366,17 +387,17 @@ img {
   z-index: 1;
 }
 
-.viewer-caption,
 .viewer-controls,
 .viewer-close {
-  display: none;
   visibility: hidden;
   opacity: 0;
-  transition: opacity 220ms var(--ease-out);
+  pointer-events: none;
 }
 
 .viewer-caption {
   position: absolute;
+  visibility: hidden;
+  pointer-events: none;
   top: 100%;
   left: 0;
   width: 100%;
@@ -424,18 +445,17 @@ img {
   -webkit-line-clamp: 2;
 }
 
-.image-viewer:not(.is-open) .viewer-caption,
-.image-viewer:not(.is-open) .viewer-controls,
-.image-viewer:not(.is-open) .viewer-close {
-  display: none;
-}
-
 .viewer-controls {
   display: flex;
+  position: fixed;
+  right: 0;
+  bottom: 16px;
+  left: 0;
+  z-index: 2;
   gap: 12px;
   align-items: center;
   justify-content: center;
-  margin-top: 16px;
+  margin-top: 0;
   color: var(--background);
 }
 
@@ -443,11 +463,21 @@ img {
 .viewer-close {
   display: grid;
   place-items: center;
-  border: 1px solid color-mix(in srgb, var(--background) 65%, transparent);
+  border: 1px solid #fdfdfd0f;
   background: rgba(0, 0, 0, 0.16);
   color: var(--background);
   cursor: pointer;
-  transition: transform 160ms var(--ease-out), background 160ms ease;
+  transition:
+    transform 150ms var(--ease-out),
+    background-color 160ms ease;
+}
+
+.viewer-controls button:active {
+  transform: scale(0.96);
+}
+
+.viewer-close:active span {
+  transform: translateY(-1px) scale(0.96);
 }
 
 .viewer-controls button {
@@ -464,9 +494,11 @@ img {
 }
 
 .viewer-close {
-  position: absolute;
-  top: 0;
-  right: -52px;
+  display: grid;
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 2;
   width: 40px;
   height: 40px;
   font-size: 1.4rem;
@@ -489,7 +521,17 @@ img {
 }
 
 .image-viewer.is-open .viewer-backdrop {
-  background: rgba(22, 22, 20, 0.88);
+  background-color: rgba(22, 22, 20, 0.88);
+  backdrop-filter: blur(4px);
+}
+
+.image-viewer.is-flipping .viewer-stage,
+.image-viewer.is-flipping .viewer-image-button {
+  transition: none !important;
+}
+
+.image-viewer.is-flipping .viewer-image-button:active {
+  transform: none;
 }
 
 .image-viewer.is-open .viewer-stage {
@@ -504,12 +546,13 @@ img {
     570px,
     calc(
       (
-        100dvh - var(--viewer-top-rail) - var(--viewer-bottom-rail) -
-        var(--viewer-caption-height) - var(--viewer-content-gap) * 2
-      ) * 0.8
+          100dvh - var(--viewer-top-rail) - var(--viewer-bottom-rail) -
+            var(--viewer-caption-height) - var(--viewer-content-gap) * 2
+        ) *
+        0.8
     )
   );
-  transform: translateY(calc(var(--viewer-caption-height) / -2));
+  margin-bottom: calc(var(--viewer-caption-height) / -2);
 }
 
 .image-viewer.is-open .viewer-image-button {
@@ -519,32 +562,15 @@ img {
 
 .image-viewer.is-open .viewer-controls {
   display: flex;
-  position: fixed;
-  right: 0;
-  bottom: 16px;
-  left: 0;
-  z-index: 2;
-  margin-top: 0;
 }
 
 .image-viewer.is-open .viewer-close {
   display: grid;
-  position: fixed;
-  top: 16px;
-  right: 16px;
-  z-index: 2;
-}
-
-.image-viewer.is-open .viewer-caption,
-.image-viewer.is-open .viewer-controls,
-.image-viewer.is-open .viewer-close {
-  visibility: visible;
-  opacity: 1;
-  transition-delay: 280ms;
 }
 
 .image-viewer.is-open .viewer-caption {
   display: block;
+  position: static;
 }
 
 .menu-footer {
@@ -604,7 +630,6 @@ img {
   .site-shell {
     margin-block: 28px;
   }
-
 }
 
 @media (max-width: 390px) {
@@ -620,15 +645,12 @@ img {
       360px,
       calc(
         (
-          100dvh - var(--viewer-top-rail) - var(--viewer-bottom-rail) -
-          var(--viewer-caption-height) - var(--viewer-content-gap) * 2
-        ) * 0.8
+            100dvh - var(--viewer-top-rail) - var(--viewer-bottom-rail) -
+              var(--viewer-caption-height) - var(--viewer-content-gap) * 2
+          ) *
+          0.8
       )
     );
-  }
-
-  .viewer-close {
-    right: -46px;
   }
 
   .footer-grid {

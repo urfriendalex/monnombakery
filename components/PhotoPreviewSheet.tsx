@@ -2,9 +2,46 @@
 
 import Image from "next/image";
 import { gsap } from "gsap";
+import { Flip } from "gsap/Flip";
 import { imageUrlFor } from "@/lib/sanity/image";
 import type { MenuItem } from "@/types/menu";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+
+gsap.registerPlugin(Flip);
+
+const VIEWPORT_MARKER_RATIO = 0.48;
+
+function prefersReducedMotion() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function scrollMenuItemToMarker(
+  menuItemId: string,
+  immediate = false,
+  onComplete?: () => void,
+) {
+  const element = document.querySelector<HTMLElement>(
+    `[data-menu-item-id="${menuItemId}"]`,
+  );
+
+  if (!element) {
+    onComplete?.();
+    return null;
+  }
+
+  const rect = element.getBoundingClientRect();
+  const viewportMarker = window.innerHeight * VIEWPORT_MARKER_RATIO;
+  const targetScrollY =
+    window.scrollY + rect.top + rect.height / 2 - viewportMarker;
+
+  window.dispatchEvent(
+    new CustomEvent("smooth-scroll:scroll-to", {
+      detail: { top: targetScrollY, immediate, onComplete },
+    }),
+  );
+
+  return targetScrollY;
+}
 
 export function PhotoPreviewProvider({
   children,
@@ -37,43 +74,247 @@ export function PhotoPreviewProvider({
   const [activeMenuItemId, setActiveMenuItemId] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
+  const [isFlipping, setIsFlipping] = useState(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const previewButtonRef = useRef<HTMLButtonElement>(null);
+  const viewerStageRef = useRef<HTMLDivElement>(null);
+  const controlsRef = useRef<HTMLDivElement>(null);
   const incomingImageRef = useRef<HTMLSpanElement>(null);
   const captionRef = useRef<HTMLDivElement>(null);
   const previouslyFocusedRef = useRef<HTMLElement | null>(null);
   const lastScrollYRef = useRef(0);
+  const lockedPreviewIndexRef = useRef<number | null>(null);
   const pointerStartXRef = useRef<number | null>(null);
   const pointerDraggedRef = useRef(false);
   const revealDirectionRef = useRef<"down" | "up">("down");
+  const flipStateRef = useRef<ReturnType<typeof Flip.getState> | null>(null);
+  const flipPendingRef = useRef<"open" | "close" | null>(null);
+  const flipTweenRef = useRef<gsap.core.Animation | null>(null);
+  const chromeTimelineRef = useRef<gsap.core.Timeline | null>(null);
+  const closeFinishRef = useRef<(() => void) | null>(null);
+  const isAnimatingRef = useRef(false);
   const activeItem = previewItems[activeIndex];
   const incomingItem = incomingIndex === null ? null : previewItems[incomingIndex];
   const visibleItem = incomingItem ?? activeItem;
 
-  useLayoutEffect(() => {
+  const getChromeTargets = useCallback(() => {
     const captionLines = captionRef.current?.querySelectorAll(".viewer-caption-line > span");
+    const controls = controlsRef.current;
+    const closeBtn = closeButtonRef.current;
 
-    if (!isOpen || !captionLines?.length) {
+    return {
+      captionLines: captionLines ? Array.from(captionLines) : [],
+      controls,
+      closeBtn,
+    };
+  }, []);
+
+  const hideChrome = useCallback(
+    (immediate = false) => {
+      const { captionLines, controls, closeBtn } = getChromeTargets();
+
+      chromeTimelineRef.current?.kill();
+      gsap.killTweensOf([...captionLines, controls, closeBtn].filter(Boolean));
+
+      if (captionRef.current) {
+        captionRef.current.style.visibility = "hidden";
+      }
+
+      if (controls) {
+        controls.style.visibility = "hidden";
+        controls.style.pointerEvents = "none";
+      }
+
+      if (closeBtn) {
+        closeBtn.style.visibility = "hidden";
+        closeBtn.style.pointerEvents = "none";
+      }
+
+      gsap.set([...captionLines, controls, closeBtn].filter(Boolean), {
+        opacity: 0,
+        y: 0,
+        scale: 1,
+        filter: "blur(0px)",
+        clearProps: "transform,filter",
+        immediateRender: immediate,
+      });
+    },
+    [getChromeTargets],
+  );
+
+  const animateChromeEnter = useCallback(
+    (immediate = false) => {
+      const { captionLines, controls, closeBtn } = getChromeTargets();
+
+      chromeTimelineRef.current?.kill();
+
+      if (captionRef.current) {
+        captionRef.current.style.visibility = "visible";
+      }
+
+      if (controls) {
+        controls.style.visibility = "visible";
+        controls.style.pointerEvents = "auto";
+      }
+
+      if (closeBtn) {
+        closeBtn.style.visibility = "visible";
+        closeBtn.style.pointerEvents = "auto";
+      }
+
+      if (immediate || prefersReducedMotion()) {
+        gsap.set([...captionLines, controls, closeBtn].filter(Boolean), {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          filter: "blur(0px)",
+        });
+        closeButtonRef.current?.focus();
+        return;
+      }
+
+      gsap.set(captionLines, { y: 12, opacity: 0, filter: "blur(4px)" });
+      gsap.set(controls, { y: 36, opacity: 0 });
+      gsap.set(closeBtn, { y: -36, opacity: 0 });
+
+      const timeline = gsap.timeline({
+        onComplete: () => {
+          closeButtonRef.current?.focus();
+        },
+      });
+
+      if (captionLines[0]) {
+        timeline.to(
+          captionLines[0],
+          { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.3, ease: "power3.out" },
+          0,
+        );
+      }
+
+      if (captionLines[1]) {
+        timeline.to(
+          captionLines[1],
+          { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.3, ease: "power3.out" },
+          0.08,
+        );
+      }
+
+      if (closeBtn) {
+        timeline.to(closeBtn, { y: 0, opacity: 1, duration: 0.34, ease: "power3.out" }, 0.06);
+      }
+
+      if (controls) {
+        timeline.to(controls, { y: 0, opacity: 1, duration: 0.34, ease: "power3.out" }, 0.1);
+      }
+
+      chromeTimelineRef.current = timeline;
+    },
+    [getChromeTargets],
+  );
+
+  const animateChromeExit = useCallback(
+    (onComplete: () => void) => {
+      const { captionLines, controls, closeBtn } = getChromeTargets();
+
+      chromeTimelineRef.current?.kill();
+
+      if (prefersReducedMotion()) {
+        hideChrome(true);
+        onComplete();
+        return;
+      }
+
+      const timeline = gsap.timeline({ onComplete });
+
+      if (captionLines[0]) {
+        timeline.to(
+          captionLines[0],
+          { y: -8, opacity: 0, duration: 0.15, ease: "power2.in" },
+          0,
+        );
+      }
+
+      if (captionLines[1]) {
+        timeline.to(
+          captionLines[1],
+          { y: -8, opacity: 0, duration: 0.15, ease: "power2.in" },
+          0.04,
+        );
+      }
+
+      if (controls) {
+        timeline.to(controls, { y: 24, opacity: 0, duration: 0.15, ease: "power2.in" }, 0.06);
+      }
+
+      if (closeBtn) {
+        timeline.to(closeBtn, { y: -24, opacity: 0, duration: 0.15, ease: "power2.in" }, 0);
+      }
+
+      chromeTimelineRef.current = timeline;
+    },
+    [getChromeTargets, hideChrome],
+  );
+
+  useLayoutEffect(() => {
+    hideChrome(true);
+  }, [hideChrome]);
+
+  useLayoutEffect(() => {
+    if (flipPendingRef.current === null || !flipStateRef.current) {
       return;
     }
 
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const captionTween = gsap.fromTo(
-      captionLines,
-      { yPercent: reduceMotion ? 0 : 110 },
-      {
-        yPercent: 0,
-        duration: reduceMotion ? 0 : 0.34,
-        ease: "power3.out",
-        stagger: reduceMotion ? 0 : 0.055,
-        overwrite: "auto",
-      },
-    );
+    const direction = flipPendingRef.current;
+    flipPendingRef.current = null;
+    const state = flipStateRef.current;
+    flipStateRef.current = null;
+    const stage = viewerStageRef.current;
 
-    return () => {
-      captionTween.kill();
-    };
-  }, [isOpen, visibleItem?.id]);
+    if (!stage) {
+      return;
+    }
+
+    if (prefersReducedMotion()) {
+      if (direction === "open") {
+        animateChromeEnter(true);
+      } else {
+        hideChrome(true);
+        closeFinishRef.current?.();
+        closeFinishRef.current = null;
+      }
+
+      return;
+    }
+
+    isAnimatingRef.current = true;
+    setIsFlipping(true);
+    stage.style.willChange = "transform";
+
+    flipTweenRef.current?.kill();
+    flipTweenRef.current = Flip.from(state, {
+      duration: 0.52,
+      ease: "power2.inOut",
+      absolute: true,
+      scale: true,
+      onComplete: () => {
+        if (direction === "close") {
+          gsap.set(stage, { clearProps: "transform,top,left,width,height,margin" });
+        }
+        stage.style.willChange = "";
+        isAnimatingRef.current = false;
+        setIsFlipping(false);
+        flipTweenRef.current = null;
+
+        if (direction === "open") {
+          animateChromeEnter(false);
+        } else {
+          hideChrome(true);
+          closeFinishRef.current?.();
+          closeFinishRef.current = null;
+        }
+      },
+    });
+  }, [isOpen, animateChromeEnter, hideChrome]);
 
   useEffect(() => {
     document.querySelectorAll<HTMLElement>("[data-menu-item-id]").forEach((element) => {
@@ -94,7 +335,7 @@ export function PhotoPreviewProvider({
       return;
     }
 
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduceMotion = prefersReducedMotion();
     const revealFrom = reduceMotion
       ? { opacity: 1, xPercent: 0, yPercent: 0 }
       : isOpen
@@ -145,17 +386,87 @@ export function PhotoPreviewProvider({
     showItem((activeIndex + 1) % previewItems.length, "down");
   }, [activeIndex, previewItems.length, showItem]);
 
-  const closePreview = useCallback(() => {
-    setIsOpen(false);
-    setIsDismissed(false);
+  const scrollToActiveMenuItemOnClose = useCallback(() => {
+    const menuItemId = (incomingItem ?? activeItem)?.id;
+
+    if (!menuItemId) {
+      return;
+    }
+
+    const index = previewItems.findIndex((item) => item.id === menuItemId);
+
+    if (index === -1) {
+      return;
+    }
+
+    lockedPreviewIndexRef.current = index;
+    setActiveIndex(index);
+    setIncomingIndex(null);
+    setActiveMenuItemId(menuItemId);
+
     requestAnimationFrame(() => {
-      previouslyFocusedRef.current?.focus();
-      previouslyFocusedRef.current = null;
+      const targetScrollY = scrollMenuItemToMarker(
+        menuItemId,
+        prefersReducedMotion(),
+        () => {
+          lockedPreviewIndexRef.current = null;
+        },
+      );
+
+      if (targetScrollY !== null) {
+        lastScrollYRef.current = targetScrollY;
+      }
     });
-  }, []);
+  }, [activeItem, incomingItem, previewItems]);
+
+  const runFlipClose = useCallback(() => {
+    const stage = viewerStageRef.current;
+
+    const finishClose = () => {
+      setIsDismissed(false);
+      requestAnimationFrame(() => {
+        previouslyFocusedRef.current?.focus();
+        previouslyFocusedRef.current = null;
+      });
+    };
+
+    if (!stage || prefersReducedMotion()) {
+      hideChrome(true);
+      scrollToActiveMenuItemOnClose();
+      setIsOpen(false);
+      finishClose();
+      return;
+    }
+
+    flipTweenRef.current?.kill();
+    chromeTimelineRef.current?.kill();
+
+    const startCloseFlip = () => {
+      scrollToActiveMenuItemOnClose();
+      flipStateRef.current = Flip.getState(stage);
+      flipPendingRef.current = "close";
+      closeFinishRef.current = finishClose;
+      setIsOpen(false);
+    };
+
+    if (isOpen) {
+      animateChromeExit(startCloseFlip);
+    } else {
+      startCloseFlip();
+    }
+  }, [animateChromeExit, hideChrome, isOpen, scrollToActiveMenuItemOnClose]);
+
+  const closePreview = useCallback(() => {
+    if (!isOpen && !isAnimatingRef.current) {
+      return;
+    }
+
+    runFlipClose();
+  }, [isOpen, runFlipClose]);
 
   const openPreview = useCallback(
     (index?: number) => {
+      lockedPreviewIndexRef.current = null;
       previouslyFocusedRef.current = document.activeElement as HTMLElement | null;
 
       if (index !== undefined) {
@@ -163,9 +474,24 @@ export function PhotoPreviewProvider({
         setIncomingIndex(null);
       }
 
+      const stage = viewerStageRef.current;
+
+      if (!stage || prefersReducedMotion()) {
+        setIsOpen(true);
+        requestAnimationFrame(() => animateChromeEnter(true));
+        return;
+      }
+
+      flipTweenRef.current?.kill();
+      chromeTimelineRef.current?.kill();
+      hideChrome(true);
+      setIsDismissed(false);
+
+      flipStateRef.current = Flip.getState(stage);
+      flipPendingRef.current = "open";
       setIsOpen(true);
     },
-    [],
+    [animateChromeEnter, hideChrome],
   );
 
   useEffect(() => {
@@ -193,7 +519,7 @@ export function PhotoPreviewProvider({
     }
 
     const updateActiveItem = () => {
-      if (isOpen) {
+      if (isOpen || lockedPreviewIndexRef.current !== null) {
         return;
       }
 
@@ -205,7 +531,7 @@ export function PhotoPreviewProvider({
         lastScrollYRef.current = currentScrollY;
       }
 
-      const viewportMarker = window.innerHeight * 0.48;
+      const viewportMarker = window.innerHeight * VIEWPORT_MARKER_RATIO;
       const menuElements = Array.from(
         document.querySelectorAll<HTMLElement>("[data-menu-item-id]"),
       );
@@ -262,7 +588,6 @@ export function PhotoPreviewProvider({
       return;
     }
 
-    closeButtonRef.current?.focus();
     document.body.style.overflow = "hidden";
     window.dispatchEvent(
       new CustomEvent("smooth-scroll:set-stopped", {
@@ -321,6 +646,10 @@ export function PhotoPreviewProvider({
     const distance = event.clientX - pointerStartX;
 
     if (!isOpen) {
+      if (isAnimatingRef.current) {
+        return;
+      }
+
       if (distance < -42) {
         setIsDismissed(true);
       }
@@ -349,7 +678,7 @@ export function PhotoPreviewProvider({
       {children}
       {activeItem && visibleItem ? (
         <div
-          className={`image-viewer${isOpen ? " is-open" : ""}${isDismissed ? " is-dismissed" : ""}`}
+          className={`image-viewer${isOpen ? " is-open" : ""}${isDismissed ? " is-dismissed" : ""}${isFlipping ? " is-flipping" : ""}`}
           role={isOpen ? "dialog" : undefined}
           aria-modal={isOpen ? "true" : undefined}
           aria-labelledby={isOpen ? "viewer-title" : undefined}
@@ -360,7 +689,7 @@ export function PhotoPreviewProvider({
               if (event.target === event.currentTarget) closePreview();
             }}
           />
-          <div className="viewer-stage">
+          <div ref={viewerStageRef} className="viewer-stage">
             <button
               ref={previewButtonRef}
               className="viewer-image-button"
@@ -386,7 +715,7 @@ export function PhotoPreviewProvider({
                   alt={activeItem.imageAlt}
                   fill
                   loading="eager"
-                  sizes={isOpen ? "(min-width: 700px) 620px, 92vw" : "160px"}
+                  sizes="(min-width: 700px) 620px, 92vw"
                   style={{ objectFit: "cover" }}
                   onLoad={() => {
                     if (incomingIndex === activeIndex) {
@@ -407,7 +736,7 @@ export function PhotoPreviewProvider({
                     alt={incomingItem.imageAlt}
                     fill
                     loading="eager"
-                    sizes={isOpen ? "(min-width: 700px) 620px, 92vw" : "160px"}
+                    sizes="(min-width: 700px) 620px, 92vw"
                     style={{ objectFit: "cover" }}
                   />
                 </span>
@@ -422,7 +751,7 @@ export function PhotoPreviewProvider({
               </p>
             </div>
           </div>
-          <div className="viewer-controls">
+          <div ref={controlsRef} className="viewer-controls">
             <button type="button" onClick={showPrevious} aria-label="Poprzednie zdjęcie">
               ←
             </button>

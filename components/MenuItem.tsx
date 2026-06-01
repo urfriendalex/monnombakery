@@ -5,7 +5,11 @@ export function MenuItem({ item }: { item: MenuItemType }) {
   const imageUrl = imageUrlFor(item.image, 1200);
 
   return (
-    <article className="menu-item" data-menu-item-id={item._id}>
+    <article
+      className="menu-item"
+      data-menu-item-id={item._id}
+      {...(imageUrl ? { "data-photo-preview-id": item._id } : {})}
+    >
       <div className="item-copy">
         <h4 className="item-name">{item.name}</h4>
         {item.description ? (
