@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
-import { Archivo, Archivo_Black } from "next/font/google";
+import { Archivo_Black, IBM_Plex_Mono } from "next/font/google";
+import { SmoothScroll } from "@/components/SmoothScroll";
+import "lenis/dist/lenis.css";
 import "./globals.css";
 
-const archivo = Archivo({
+const plexMono = IBM_Plex_Mono({
   variable: "--font-body",
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
   display: "swap",
 });
 
@@ -28,9 +31,11 @@ export default function RootLayout({
   return (
     <html
       lang="pl"
-      className={`${archivo.variable} ${archivoBlack.variable} h-full antialiased`}
+      className={`${plexMono.variable} ${archivoBlack.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <SmoothScroll>{children}</SmoothScroll>
+      </body>
     </html>
   );
 }

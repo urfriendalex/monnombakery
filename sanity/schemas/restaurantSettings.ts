@@ -10,6 +10,7 @@ export const restaurantSettings = defineType({
     defineField({ name: "decorativeLogo", type: "image", options: { hotspot: true } }),
     defineField({ name: "description", type: "text" }),
     defineField({ name: "address", type: "string" }),
+    defineField({ name: "mapUrl", type: "url" }),
     defineField({ name: "phone", type: "string" }),
     defineField({ name: "email", type: "string" }),
     defineField({ name: "instagramUrl", type: "url" }),

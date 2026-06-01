@@ -10,12 +10,11 @@ export function Footer({ settings }: { settings: RestaurantSettings }) {
       <div className="footer-grid">
         <section aria-labelledby="address-heading">
           <h2 id="address-heading">Adres</h2>
-          {settings.address ? <p>{settings.address}</p> : null}
-        </section>
-        <section aria-labelledby="contact-heading">
-          <h2 id="contact-heading">Kontakt</h2>
-          {settings.phone ? <p>{settings.phone}</p> : null}
-          {settings.email ? <p>{settings.email}</p> : null}
+          {settings.address ? (
+            <a href={settings.mapUrl} target="_blank" rel="noreferrer">
+              {settings.address}
+            </a>
+          ) : null}
         </section>
         <section aria-labelledby="social-heading">
           <h2 id="social-heading">Social</h2>
@@ -24,14 +23,6 @@ export function Footer({ settings }: { settings: RestaurantSettings }) {
               Instagram
             </a>
           ) : null}
-        </section>
-        <section aria-labelledby="reservation-heading">
-          <h2 id="reservation-heading">Rezerwacje</h2>
-          {settings.reservationUrl ? (
-            <a href={settings.reservationUrl}>Zarezerwuj stolik</a>
-          ) : (
-            <p>Przyjmujemy na miejscu.</p>
-          )}
         </section>
       </div>
 

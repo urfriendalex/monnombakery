@@ -1,15 +1,11 @@
-"use client";
-
-import { usePhotoPreview } from "@/components/PhotoPreviewSheet";
 import { imageUrlFor } from "@/lib/sanity/image";
 import type { MenuItem as MenuItemType } from "@/types/menu";
 
 export function MenuItem({ item }: { item: MenuItemType }) {
-  const { openPreview } = usePhotoPreview();
   const imageUrl = imageUrlFor(item.image, 1200);
 
   return (
-    <article className="menu-item">
+    <article className="menu-item" data-menu-item-id={item._id}>
       <div className="item-copy">
         <h4 className="item-name">{item.name}</h4>
         {item.description ? (
@@ -21,14 +17,8 @@ export function MenuItem({ item }: { item: MenuItemType }) {
               <button
                 className="photo-trigger"
                 type="button"
-                onClick={() =>
-                  openPreview({
-                    title: item.name,
-                    description: item.description,
-                    imageUrl,
-                    imageAlt: item.imageAlt ?? item.image?.alt ?? item.name,
-                  })
-                }
+                data-photo-preview-id={item._id}
+                aria-label={`Zobacz zdjęcie: ${item.name}`}
               >
                 zdjęcie
               </button>

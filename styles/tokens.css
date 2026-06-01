@@ -4,10 +4,24 @@
   --text: #1f1f1f;
   --muted: #5f5f5d;
   --line: #2a2a2a;
+  --active-line: #d7b24a;
+  --edge-line: #b9b9b4;
   --menu-max-width: 460px;
-  --page-padding: clamp(20px, 6.4vw, 32px);
-  --section-gap: 64px;
-  --item-gap: 15px;
+  --page-padding: clamp(20px, 7vw, 30px);
+  --space-xs: 0.35rem;
+  --space-sm: 0.75rem;
+  --space-md: 1.25rem;
+  --space-lg: 2rem;
+  --space-xl: 3.5rem;
+  --section-gap: 4.75rem;
+  --item-gap: var(--space-sm);
+  --text-caption: 0.63rem;
+  --text-label: 0.75rem;
+  --text-body: 1.12rem;
+  --text-subheading: 1.32rem;
+  --text-price: 1.78rem;
   --thin-line: 1px;
   --dashed-line: 1px dashed var(--line);
+  --active-dashed-line: 1px dashed var(--active-line);
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 }

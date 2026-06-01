@@ -14,7 +14,7 @@ export default async function Home() {
   );
 
   return (
-    <PhotoPreviewProvider>
+    <PhotoPreviewProvider items={items}>
       <SiteShell>
         <Header settings={settings} />
         <CategoryNav categories={visibleCategories} />

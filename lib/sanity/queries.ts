@@ -9,6 +9,7 @@ export const restaurantSettingsQuery = `*[_type == "restaurantSettings"][0]{
   decorativeLogo,
   description,
   address,
+  mapUrl,
   phone,
   email,
   instagramUrl,

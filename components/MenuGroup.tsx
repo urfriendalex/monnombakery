@@ -12,7 +12,6 @@ export function MenuGroup({ group, categories, items }: MenuGroupProps) {
     <section className="menu-group" aria-labelledby={`${group.slug}-heading`}>
       <div className="group-heading">
         <h2 id={`${group.slug}-heading`}>{group.title}</h2>
-        <span>{String(categories.length).padStart(2, "0")} sekcje</span>
       </div>
       {categories.map((category) => (
         <MenuSection

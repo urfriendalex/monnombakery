@@ -27,6 +27,7 @@ export type RestaurantSettings = {
   decorativeLogoText?: string;
   description?: string;
   address?: string;
+  mapUrl?: string;
   phone?: string;
   email?: string;
   instagramUrl?: string;
