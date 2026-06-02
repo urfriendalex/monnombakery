@@ -367,7 +367,7 @@ img {
   aspect-ratio: 4 / 5;
   overflow: hidden;
   border: 0;
-  background: transparent;
+  background: color-mix(in srgb, var(--text) 6%, var(--background));
   cursor: zoom-in;
   touch-action: pan-y;
   outline: 1px solid rgba(0, 0, 0, 0.1);
@@ -385,6 +385,21 @@ img {
 
 .viewer-image-layer.is-incoming {
   z-index: 1;
+}
+
+.viewer-image-layer.is-buffered {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.viewer-image-layer.is-active {
+  opacity: 1;
+}
+
+.viewer-image-layer.is-incoming.is-pending {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .viewer-controls,

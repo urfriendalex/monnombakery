@@ -4,6 +4,7 @@ import Image from "next/image";
 import { gsap } from "gsap";
 import { Flip } from "gsap/Flip";
 import { imageUrlFor } from "@/lib/sanity/image";
+import { createPreviewImagePreloader } from "@/lib/preview-image-preload";
 import type { MenuItem } from "@/types/menu";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
@@ -93,9 +94,18 @@ export function PhotoPreviewProvider({
   const chromeTimelineRef = useRef<gsap.core.Timeline | null>(null);
   const closeFinishRef = useRef<(() => void) | null>(null);
   const isAnimatingRef = useRef(false);
+  const imagePreloaderRef = useRef(createPreviewImagePreloader());
+  const pendingShowRef = useRef<{ index: number; direction: "down" | "up" } | null>(null);
+  const [incomingReady, setIncomingReady] = useState(false);
   const activeItem = previewItems[activeIndex];
   const incomingItem = incomingIndex === null ? null : previewItems[incomingIndex];
-  const visibleItem = incomingItem ?? activeItem;
+  const displayIndex =
+    incomingReady && incomingIndex !== null ? incomingIndex : activeIndex;
+  const displayItem = previewItems[displayIndex] ?? activeItem;
+
+  const markImageLoaded = useCallback((url: string) => {
+    imagePreloaderRef.current.markLoaded(url);
+  }, []);
 
   const getChromeTargets = useCallback(() => {
     const captionLines = captionRef.current?.querySelectorAll(".viewer-caption-line > span");
@@ -318,7 +328,7 @@ export function PhotoPreviewProvider({
 
   useEffect(() => {
     document.querySelectorAll<HTMLElement>("[data-menu-item-id]").forEach((element) => {
-      const highlightedItemId = isOpen ? visibleItem?.id : activeMenuItemId;
+      const highlightedItemId = isOpen ? displayItem?.id : activeMenuItemId;
 
       if (element.dataset.menuItemId === highlightedItemId) {
         element.dataset.viewerActive = "true";
@@ -326,12 +336,102 @@ export function PhotoPreviewProvider({
         delete element.dataset.viewerActive;
       }
     });
-  }, [activeMenuItemId, isOpen, visibleItem?.id]);
+  }, [activeMenuItemId, displayItem?.id, isOpen]);
+
+  useEffect(() => {
+    if (!previewItems.length) {
+      return;
+    }
+
+    const preloader = imagePreloaderRef.current;
+    const warmNeighbors = (index: number) => {
+      const length = previewItems.length;
+
+      for (let offset = -2; offset <= 2; offset += 1) {
+        const neighbor = previewItems[(index + offset + length) % length];
+
+        if (neighbor) {
+          void preloader.prefetch(neighbor.imageUrl);
+        }
+      }
+    };
+
+    warmNeighbors(activeIndex);
+
+    previewItems.forEach((item) => {
+      void preloader.prefetch(item.imageUrl);
+    });
+  }, [activeIndex, isOpen, previewItems]);
+
+  useEffect(() => {
+    if (incomingIndex === null) {
+      setIncomingReady(false);
+      return;
+    }
+
+    const url = previewItems[incomingIndex]?.imageUrl;
+
+    if (!url) {
+      return;
+    }
+
+    const preloader = imagePreloaderRef.current;
+
+    if (preloader.isLoaded(url)) {
+      setIncomingReady(true);
+      return;
+    }
+
+    setIncomingReady(false);
+
+    void preloader.prefetch(url).then(
+      () => {
+        setIncomingReady(true);
+      },
+      () => {
+        setIncomingReady(true);
+      },
+    );
+  }, [incomingIndex, previewItems]);
+
+  const showItem = useCallback(
+    (index: number, direction: "down" | "up") => {
+      if (index === activeIndex && incomingIndex === null) {
+        return;
+      }
+
+      if (incomingIndex !== null) {
+        pendingShowRef.current = { index, direction };
+        return;
+      }
+
+      const item = previewItems[index];
+
+      if (!item) {
+        return;
+      }
+
+      const preloader = imagePreloaderRef.current;
+      const beginTransition = () => {
+        revealDirectionRef.current = direction;
+        setIncomingReady(preloader.isLoaded(item.imageUrl));
+        setIncomingIndex(index);
+      };
+
+      if (preloader.isLoaded(item.imageUrl)) {
+        beginTransition();
+        return;
+      }
+
+      void preloader.prefetch(item.imageUrl).then(beginTransition, beginTransition);
+    },
+    [activeIndex, incomingIndex, previewItems],
+  );
 
   useLayoutEffect(() => {
     const incomingImage = incomingImageRef.current;
 
-    if (!incomingImage || incomingIndex === null) {
+    if (!incomingImage || incomingIndex === null || !incomingReady) {
       return;
     }
 
@@ -356,7 +456,21 @@ export function PhotoPreviewProvider({
         ease: isOpen ? "power2.out" : "power2.inOut",
         overwrite: "auto",
         onComplete: () => {
+          gsap.set(incomingImage, {
+            clearProps: "opacity,transform,xPercent,yPercent",
+          });
           setActiveIndex(incomingIndex);
+          setIncomingIndex(null);
+          setIncomingReady(false);
+
+          const pending = pendingShowRef.current;
+
+          if (pending) {
+            pendingShowRef.current = null;
+            requestAnimationFrame(() => {
+              showItem(pending.index, pending.direction);
+            });
+          }
         },
       },
     );
@@ -364,19 +478,7 @@ export function PhotoPreviewProvider({
     return () => {
       revealTween.kill();
     };
-  }, [incomingIndex, isOpen]);
-
-  const showItem = useCallback(
-    (index: number, direction: "down" | "up") => {
-      if (index === activeIndex || incomingIndex !== null) {
-        return;
-      }
-
-      revealDirectionRef.current = direction;
-      setIncomingIndex(index);
-    },
-    [activeIndex, incomingIndex],
-  );
+  }, [incomingIndex, incomingReady, isOpen, showItem]);
 
   const showPrevious = useCallback(() => {
     showItem((activeIndex - 1 + previewItems.length) % previewItems.length, "up");
@@ -676,7 +778,7 @@ export function PhotoPreviewProvider({
   return (
     <>
       {children}
-      {activeItem && visibleItem ? (
+      {activeItem && displayItem ? (
         <div
           className={`image-viewer${isOpen ? " is-open" : ""}${isDismissed ? " is-dismissed" : ""}${isFlipping ? " is-flipping" : ""}`}
           role={isOpen ? "dialog" : undefined}
@@ -694,7 +796,7 @@ export function PhotoPreviewProvider({
               ref={previewButtonRef}
               className="viewer-image-button"
               type="button"
-              aria-label={`Otwórz zdjęcie: ${visibleItem.title}`}
+              aria-label={`Otwórz zdjęcie: ${displayItem.title}`}
               onClick={() => {
                 if (!pointerDraggedRef.current) {
                   openPreview();
@@ -705,49 +807,50 @@ export function PhotoPreviewProvider({
               onPointerUp={onPointerUp}
               onPointerCancel={onPointerCancel}
             >
-              <span
-                className="viewer-image-layer"
-                style={{ display: "block", inset: 0, position: "absolute" }}
-              >
-                <Image
-                  key={activeItem.id}
-                  src={activeItem.imageUrl}
-                  alt={activeItem.imageAlt}
-                  fill
-                  loading="eager"
-                  sizes="(min-width: 700px) 620px, 92vw"
-                  style={{ objectFit: "cover" }}
-                  onLoad={() => {
-                    if (incomingIndex === activeIndex) {
-                      setIncomingIndex(null);
-                    }
-                  }}
-                />
-              </span>
-              {incomingItem ? (
-                <span
-                  ref={incomingImageRef}
-                  className="viewer-image-layer is-incoming"
-                  style={{ display: "block", inset: 0, position: "absolute" }}
-                >
-                  <Image
-                    key={incomingItem.id}
-                    src={incomingItem.imageUrl}
-                    alt={incomingItem.imageAlt}
-                    fill
-                    loading="eager"
-                    sizes="(min-width: 700px) 620px, 92vw"
-                    style={{ objectFit: "cover" }}
-                  />
-                </span>
-              ) : null}
+              {previewItems.map((item, index) => {
+                const isActive = index === activeIndex;
+                const isIncoming = incomingIndex !== null && index === incomingIndex;
+                const isOnStage = isActive || isIncoming;
+
+                return (
+                  <span
+                    key={item.id}
+                    ref={isIncoming ? incomingImageRef : undefined}
+                    className={`viewer-image-layer${isActive ? " is-active" : ""}${isIncoming ? " is-incoming" : ""}${!isOnStage ? " is-buffered" : ""}${isIncoming && !incomingReady ? " is-pending" : ""}`}
+                    aria-hidden={!isOnStage}
+                    style={{
+                      display: "block",
+                      inset: 0,
+                      position: "absolute",
+                      zIndex: isIncoming ? 2 : isOnStage ? 1 : 0,
+                    }}
+                  >
+                    <Image
+                      src={item.imageUrl}
+                      alt={isOnStage ? item.imageAlt : ""}
+                      fill
+                      priority={isOnStage}
+                      loading="eager"
+                      sizes="(min-width: 700px) 620px, 92vw"
+                      style={{ objectFit: "cover" }}
+                      onLoad={() => {
+                        markImageLoaded(item.imageUrl);
+
+                        if (isIncoming) {
+                          setIncomingReady(true);
+                        }
+                      }}
+                    />
+                  </span>
+                );
+              })}
             </button>
             <div ref={captionRef} className="viewer-caption">
               <h3 id="viewer-title" className="viewer-caption-line">
-                <span>{visibleItem.title}</span>
+                <span>{displayItem.title}</span>
               </h3>
               <p className="viewer-caption-line viewer-caption-description">
-                <span>{visibleItem.description ?? "\u00a0"}</span>
+                <span>{displayItem.description ?? "\u00a0"}</span>
               </p>
             </div>
           </div>
@@ -755,7 +858,7 @@ export function PhotoPreviewProvider({
             <button type="button" onClick={showPrevious} aria-label="Poprzednie zdjęcie">
               ←
             </button>
-            <span aria-live="polite">{(incomingIndex ?? activeIndex) + 1} / {previewItems.length}</span>
+            <span aria-live="polite">{displayIndex + 1} / {previewItems.length}</span>
             <button type="button" onClick={showNext} aria-label="Następne zdjęcie">
               →
             </button>
