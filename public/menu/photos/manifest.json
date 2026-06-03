@@ -1,0 +1,63 @@
+{
+  "basePath": "/menu/photos",
+  "items": {
+    "sniadanie-mortadela": {
+      "primary": "/menu/photos/sniadanie-mortadelo.jpeg"
+    },
+    "sniadanie-losos": {
+      "primary": "/menu/photos/sniadanie-losos.jpeg"
+    },
+    "owsianka-mortadela-jajko": {
+      "primary": "/menu/photos/owsianka-mortadelo.jpeg"
+    },
+    "owsianka-awokado-losos": {
+      "primary": "/menu/photos/owsianka-losos.jpeg"
+    },
+    "sandwicz-z-rostbefem": {
+      "primary": "/menu/photos/sandwicz-rostbef.jpeg"
+    },
+    "sandwicz-z-indykiem": {
+      "primary": "/menu/photos/sandwicz-indyk.jpeg"
+    },
+    "talerz-jajko-i-ser": {
+      "primary": "/menu/photos/talerz-jajko-ser.jpeg",
+      "alternates": ["/menu/photos/talerzjajkoser.jpeg"]
+    },
+    "syrniki-z-chalwa": {
+      "primary": "/menu/photos/syrniki-chalwa.jpeg",
+      "alternates": ["/menu/photos/syrniki-chalwa-1.jpeg"]
+    },
+    "syrniki-z-salsa-ogorkowa": {
+      "primary": "/menu/photos/syrniki-ogorek.jpeg"
+    },
+    "espresso-tonic": {
+      "primary": "/menu/photos/espresso-tonic.jpeg",
+      "alternates": ["/menu/photos/espresso-tonic-1.jpeg"]
+    },
+    "citrus-coffee": {
+      "primary": "/menu/photos/citrus-coffe.jpeg"
+    },
+    "filter-tonic": {
+      "primary": "/menu/photos/filter-tonic.jpeg",
+      "alternates": ["/menu/photos/filter-tonic-1.jpeg"]
+    },
+    "ice-filter": {
+      "primary": "/menu/photos/ice-filter.jpeg"
+    },
+    "ice-latte-sesame": {
+      "primary": "/menu/photos/iced-latte-sesame.jpeg"
+    },
+    "tropical-matcha": {
+      "primary": "/menu/photos/tropical-matcha.jpeg"
+    },
+    "ice-matcha-latte": {
+      "primary": "/menu/photos/iced-matcha-latte.jpeg"
+    },
+    "matcha-tonic": {
+      "primary": "/menu/photos/matcha-tonic.jpeg"
+    },
+    "ice-matcha-sesame": {
+      "primary": "/menu/photos/ice-matcha-sesame.jpeg"
+    }
+  }
+}

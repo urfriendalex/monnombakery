@@ -792,6 +792,13 @@ export function PhotoPreviewProvider({
             }}
           />
           <div ref={viewerStageRef} className="viewer-stage">
+            <div
+              key={`${activeItem.id}-${isOpen ? "open" : "closed"}`}
+              className="viewer-dismiss-hint"
+              aria-hidden="true"
+            >
+              Przesuń w lewo, aby ukryć
+            </div>
             <button
               ref={previewButtonRef}
               className="viewer-image-button"

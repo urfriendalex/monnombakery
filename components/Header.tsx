@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import type { RestaurantSettings } from "@/types/menu";
 
 export function Header({ settings }: { settings: RestaurantSettings }) {
@@ -5,9 +7,14 @@ export function Header({ settings }: { settings: RestaurantSettings }) {
     <header className="menu-header">
       <div className="header-brand">
         <p className="header-kicker">sezonowe</p>
-        <h1 className="logo-wordmark" aria-label={`${settings.name} menu`}>
-          menu
-        </h1>
+        <Image
+          className="logo-wordmark"
+          src="/menu/text/menu-right.svg"
+          alt={`${settings.name} menu`}
+          width={528}
+          height={147}
+          priority
+        />
       </div>
       <div className="header-meta">
         <p className="header-label">branchy</p>

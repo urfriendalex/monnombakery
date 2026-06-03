@@ -1,4 +1,5 @@
 import type { RestaurantSettings } from "@/types/menu";
+import Image from "next/image";
 
 export function Footer({ settings }: { settings: RestaurantSettings }) {
   return (
@@ -12,7 +13,7 @@ export function Footer({ settings }: { settings: RestaurantSettings }) {
           <h2 id="address-heading">Adres</h2>
           {settings.address ? (
             <a href={settings.mapUrl} target="_blank" rel="noreferrer">
-              {settings.address}
+              {settings.address.replace(", ", ",\n")}
             </a>
           ) : null}
         </section>
@@ -26,11 +27,14 @@ export function Footer({ settings }: { settings: RestaurantSettings }) {
         </section>
       </div>
 
-      <div className="decorative-logo" aria-hidden="true">
-        {(settings.decorativeLogoText ?? settings.name).split("\n").map((line) => (
-          <div key={line}>{line}</div>
-        ))}
-      </div>
+      <Image
+        className="decorative-logo"
+        src="/logo/logo.svg"
+        alt=""
+        aria-hidden="true"
+        width={360}
+        height={240}
+      />
     </footer>
   );
 }

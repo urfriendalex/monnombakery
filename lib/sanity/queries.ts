@@ -1,4 +1,5 @@
 import { mockMenuData } from "@/lib/mock-data";
+import { applyMenuPhotoManifest } from "@/lib/menu-photo-manifest";
 import { getSanityClient, hasSanityConfig } from "@/lib/sanity/client";
 import type { MenuPageData } from "@/types/menu";
 
@@ -63,7 +64,10 @@ export const visibleMenuItemsQuery = `*[
 
 export async function getMenuPageData(): Promise<MenuPageData> {
   if (!hasSanityConfig) {
-    return mockMenuData;
+    return {
+      ...mockMenuData,
+      items: applyMenuPhotoManifest(mockMenuData.items),
+    };
   }
 
   try {
@@ -79,7 +83,7 @@ export async function getMenuPageData(): Promise<MenuPageData> {
       settings: settings ?? mockMenuData.settings,
       groups: groups.length ? groups : mockMenuData.groups,
       categories: categories.length ? categories : mockMenuData.categories,
-      items: items.length ? items : mockMenuData.items,
+      items: applyMenuPhotoManifest(items.length ? items : mockMenuData.items),
     };
   } catch (error) {
     console.warn("Falling back to mock menu data:", error);
