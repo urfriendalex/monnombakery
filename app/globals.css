@@ -561,11 +561,12 @@ img {
 .viewer-controls button {
   width: 42px;
   height: 42px;
+  font-size: 0.68rem;
 }
 
 .viewer-controls span {
   min-width: 3.5rem;
-  font-size: 0.68rem;
+  font-size: 0.58rem;
   letter-spacing: 0.06em;
   text-align: center;
   font-variant-numeric: tabular-nums;
