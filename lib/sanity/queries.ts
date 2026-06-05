@@ -127,10 +127,6 @@ export async function getMenuPageData(): Promise<MenuPageData> {
       client.fetch(visibleMenuItemsQuery),
     ]);
 
-    if (!settings && !canUseMockData) {
-      throw new Error("Missing restaurantSettings document in Sanity.");
-    }
-
     return {
       settings: settings ?? mockMenuData.settings,
       groups,
