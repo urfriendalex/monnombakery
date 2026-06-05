@@ -19,8 +19,8 @@ const archivoBlack = Archivo_Black({
 });
 
 export const metadata: Metadata = {
-  title: "Mon Nom Bakery | Menu",
-  description: "Mobile-first bakery and breakfast menu.",
+  title: "Mon Nom Bakery",
+  description: "Mobile-first bakery landing page and menu.",
 };
 
 export default function RootLayout({

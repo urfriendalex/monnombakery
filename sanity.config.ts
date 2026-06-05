@@ -11,7 +11,27 @@ export default defineConfig({
   projectId,
   dataset,
   basePath: "/studio",
-  plugins: [structureTool()],
+  plugins: [
+    structureTool({
+      structure: (S) =>
+        S.list()
+          .title("Content")
+          .items([
+            S.listItem()
+              .title("Restaurant Settings")
+              .id("restaurant-settings")
+              .child(
+                S.document()
+                  .schemaType("restaurantSettings")
+                  .documentId("restaurant-settings"),
+              ),
+            S.divider(),
+            S.documentTypeListItem("menuItem").title("Menu Items"),
+            S.documentTypeListItem("menuCategory").title("Menu Categories"),
+            S.documentTypeListItem("menuGroup").title("Menu Groups"),
+          ]),
+    }),
+  ],
   schema: {
     types: schemaTypes,
   },

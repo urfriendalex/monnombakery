@@ -13,4 +13,17 @@ export const menuCategory = defineType({
     defineField({ name: "isVisible", type: "boolean", initialValue: true }),
   ],
   orderings: [{ title: "Order", name: "orderAsc", by: [{ field: "order", direction: "asc" }] }],
+  preview: {
+    select: {
+      title: "title",
+      group: "group.title",
+      visible: "isVisible",
+    },
+    prepare({ title, group, visible }) {
+      return {
+        title,
+        subtitle: [group, visible === false ? "Hidden" : "Visible"].filter(Boolean).join(" · "),
+      };
+    },
+  },
 });

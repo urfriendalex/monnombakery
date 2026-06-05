@@ -1,4 +1,7 @@
 import { createClient } from "@sanity/client";
+import { createReadStream, readFileSync } from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET ?? "production";
@@ -13,6 +16,12 @@ if (!projectId || !token) {
 
 const ref = (_ref) => ({ _type: "reference", _ref });
 const slug = (current) => ({ _type: "slug", current });
+const imageRef = (_ref) => ({ _type: "image", asset: { _type: "reference", _ref } });
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const rootDir = path.resolve(__dirname, "..");
+const photoManifest = JSON.parse(
+  readFileSync(path.join(rootDir, "public/menu/photos/manifest.json"), "utf8"),
+);
 
 const documents = [
   {
@@ -65,10 +74,44 @@ const client = createClient({
   useCdn: false,
 });
 
+async function uploadImageAsset(publicPath, title) {
+  const filePath = path.join(rootDir, "public", publicPath.replace(/^\//, ""));
+  return client.assets.upload("image", createReadStream(filePath), {
+    filename: path.basename(filePath),
+    title,
+  });
+}
+
+async function attachMenuImages(document) {
+  if (document._type !== "menuItem" || !document.slug?.current) {
+    return document;
+  }
+
+  const manifestEntry = photoManifest.items?.[document.slug.current];
+  if (!manifestEntry?.primary) {
+    return document;
+  }
+
+  const primaryAsset = await uploadImageAsset(manifestEntry.primary, document.name);
+  const alternateAssets = await Promise.all(
+    (manifestEntry.alternates ?? []).map((alternatePath, index) =>
+      uploadImageAsset(alternatePath, `${document.name} alternate ${index + 1}`),
+    ),
+  );
+
+  return {
+    ...document,
+    image: imageRef(primaryAsset._id),
+    gallery: alternateAssets.map((asset) => imageRef(asset._id)),
+  };
+}
+
+const seededDocuments = await Promise.all(documents.map(attachMenuImages));
+
 let transaction = client.transaction();
-for (const document of documents) {
+for (const document of seededDocuments) {
   transaction = transaction.createOrReplace(document);
 }
 
 await transaction.commit();
-console.log(`Seeded ${documents.length} Sanity documents into ${projectId}/${dataset}.`);
+console.log(`Seeded ${seededDocuments.length} Sanity documents into ${projectId}/${dataset}.`);

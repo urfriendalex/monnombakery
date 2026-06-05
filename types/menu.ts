@@ -65,8 +65,12 @@ export type MenuItem = {
   description?: string;
   price: string;
   secondaryPrice?: string;
+  dietaryLabels?: string[];
+  badgeLabel?: string;
+  servingNote?: string;
   image?: SanityImage;
   imageAlt?: string;
+  gallery?: SanityImage[];
   tags?: string[];
   allergens?: string[];
   isVisible: boolean;

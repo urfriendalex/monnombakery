@@ -11,4 +11,16 @@ export const menuGroup = defineType({
     defineField({ name: "isVisible", type: "boolean", initialValue: true }),
   ],
   orderings: [{ title: "Order", name: "orderAsc", by: [{ field: "order", direction: "asc" }] }],
+  preview: {
+    select: {
+      title: "title",
+      visible: "isVisible",
+    },
+    prepare({ title, visible }) {
+      return {
+        title,
+        subtitle: visible === false ? "Hidden" : "Visible",
+      };
+    },
+  },
 });

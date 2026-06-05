@@ -6,8 +6,22 @@ import type { MenuPageData } from "@/types/menu";
 export const restaurantSettingsQuery = `*[_type == "restaurantSettings"][0]{
   _id,
   name,
-  logo,
-  decorativeLogo,
+  logo{
+    ...,
+    asset->{
+      _id,
+      url,
+      metadata { dimensions }
+    }
+  },
+  decorativeLogo{
+    ...,
+    asset->{
+      _id,
+      url,
+      metadata { dimensions }
+    }
+  },
   description,
   address,
   mapUrl,
@@ -52,8 +66,34 @@ export const visibleMenuItemsQuery = `*[
   description,
   price,
   secondaryPrice,
-  image,
+  dietaryLabels,
+  badgeLabel,
+  servingNote,
+  image{
+    ...,
+    asset->{
+      _id,
+      url,
+      metadata {
+        dimensions,
+        lqip,
+        palette
+      }
+    }
+  },
   imageAlt,
+  gallery[]{
+    ...,
+    asset->{
+      _id,
+      url,
+      metadata {
+        dimensions,
+        lqip,
+        palette
+      }
+    }
+  },
   tags,
   allergens,
   isVisible,
@@ -83,7 +123,7 @@ export async function getMenuPageData(): Promise<MenuPageData> {
       settings: settings ?? mockMenuData.settings,
       groups: groups.length ? groups : mockMenuData.groups,
       categories: categories.length ? categories : mockMenuData.categories,
-      items: applyMenuPhotoManifest(items.length ? items : mockMenuData.items),
+      items: items.length ? items : applyMenuPhotoManifest(mockMenuData.items),
     };
   } catch (error) {
     console.warn("Falling back to mock menu data:", error);
