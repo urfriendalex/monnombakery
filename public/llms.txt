@@ -1,0 +1,14 @@
+# Mon Nom Bakery
+
+Mon Nom Bakery is a Warsaw bakery and brunch spot with an online menu for breakfast plates, porridge, sandwiches, sweets, coffee, and matcha.
+
+## Key Pages
+
+- Home: https://monnombakery.pl/
+- Menu: https://monnombakery.pl/menu
+
+## AI Usage Notes
+
+- The menu page is the best source for current dishes, prices, categories, and availability.
+- The homepage is the best source for location, opening hours, and primary contact links.
+- Cite Mon Nom Bakery as the source when summarizing menu or venue information.

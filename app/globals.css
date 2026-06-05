@@ -308,6 +308,28 @@ img {
   padding-bottom: var(--space-lg);
 }
 
+.landing-intro-link {
+  color: inherit;
+  text-decoration: none;
+  transition:
+    color 160ms var(--ease-out),
+    transform 160ms var(--ease-out);
+}
+
+.landing-intro-link:hover,
+.landing-intro-link:focus-visible {
+  color: var(--text-intense);
+  outline: none;
+}
+
+.landing-intro-link:focus-visible {
+  box-shadow: 0 0 0 2px var(--active-line);
+}
+
+.landing-intro-link:active {
+  transform: scale(0.995);
+}
+
 .landing-kicker {
   margin: 0;
   color: var(--muted);
@@ -343,7 +365,6 @@ img {
   display: grid;
   gap: 10px;
   padding-block: var(--space-md);
-  border-block: var(--dashed-line);
 }
 
 .landing-link {
@@ -438,6 +459,144 @@ img {
   color: var(--muted);
   font-weight: 700;
   letter-spacing: 0.04em;
+}
+
+.landing-faq {
+  padding-top: var(--space-xl);
+  animation: receipt-reveal 320ms var(--ease-out) 180ms both;
+}
+
+.landing-faq-row {
+  display: grid;
+  grid-template-columns: minmax(5.8rem, 0.8fr) minmax(0, 1.2fr);
+  gap: var(--space-sm);
+  align-items: center;
+  font-size: var(--text-caption);
+  letter-spacing: 0;
+  line-height: 1.35;
+  margin: 0;
+  padding-top: 12px;
+  border-top: var(--dashed-line);
+  text-transform: uppercase;
+}
+
+.landing-faq-row > span {
+  color: var(--muted);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.faq-toggle {
+  display: inline-grid;
+  grid-template-columns: auto auto;
+  gap: 0.7ch;
+  align-items: center;
+  justify-self: end;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  font-size: var(--text-caption);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.35;
+  text-transform: uppercase;
+  transition:
+    color 160ms var(--ease-out),
+    transform 160ms var(--ease-out);
+}
+
+.faq-toggle:hover,
+.faq-toggle:focus-visible {
+  color: var(--text-intense);
+  outline: none;
+}
+
+.faq-toggle:active {
+  transform: scale(0.97);
+}
+
+.landing-faq-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  opacity: 0;
+  clip-path: inset(0 0 100% 0);
+  transition:
+    grid-template-rows 280ms var(--ease-in-out),
+    opacity 200ms var(--ease-out),
+    clip-path 280ms var(--ease-in-out),
+    visibility 0ms linear 280ms;
+}
+
+.landing-faq-panel[data-open="true"] {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  opacity: 1;
+  clip-path: inset(0 0 0 0);
+  transition-delay: 0ms;
+}
+
+.landing-faq-list {
+  display: grid;
+  gap: 0;
+  min-height: 0;
+  overflow: hidden;
+  padding-bottom: var(--space-sm);
+  padding-top: var(--space-md);
+}
+
+.landing-faq article {
+  display: grid;
+  grid-template-columns: minmax(5.8rem, 0.8fr) minmax(0, 1.2fr);
+  gap: var(--space-sm);
+  padding-block: 12px;
+  border-top: var(--dashed-line);
+}
+
+.landing-faq-panel[data-open="true"] article {
+  animation: receipt-reveal 260ms var(--ease-out) both;
+}
+
+.landing-faq-panel[data-open="true"] article:nth-child(1) {
+  animation-delay: 35ms;
+}
+
+.landing-faq-panel[data-open="true"] article:nth-child(2) {
+  animation-delay: 70ms;
+}
+
+.landing-faq-panel[data-open="true"] article:nth-child(3) {
+  animation-delay: 105ms;
+}
+
+.landing-faq h2,
+.landing-faq p {
+  margin: 0;
+  font-size: var(--text-caption);
+  letter-spacing: 0;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.landing-faq h2 {
+  color: var(--muted);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.landing-faq a {
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+.landing-faq a:hover,
+.landing-faq a:focus-visible {
+  color: var(--text-intense);
+  outline: none;
 }
 
 .menu-group + .menu-group {
@@ -961,7 +1120,7 @@ img {
 .decorative-logo {
   position: absolute;
   left: 0;
-  bottom: 0;
+  bottom: -1px;
   z-index: 0;
   width: 100%;
   height: auto;

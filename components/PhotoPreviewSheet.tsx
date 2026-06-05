@@ -297,7 +297,6 @@ export function PhotoPreviewProvider({
     }
 
     isAnimatingRef.current = true;
-    setIsFlipping(true);
     stage.style.willChange = "transform";
 
     flipTweenRef.current?.kill();
@@ -362,37 +361,6 @@ export function PhotoPreviewProvider({
       void preloader.prefetch(item.imageUrl);
     });
   }, [activeIndex, isOpen, previewItems]);
-
-  useEffect(() => {
-    if (incomingIndex === null) {
-      setIncomingReady(false);
-      return;
-    }
-
-    const url = previewItems[incomingIndex]?.imageUrl;
-
-    if (!url) {
-      return;
-    }
-
-    const preloader = imagePreloaderRef.current;
-
-    if (preloader.isLoaded(url)) {
-      setIncomingReady(true);
-      return;
-    }
-
-    setIncomingReady(false);
-
-    void preloader.prefetch(url).then(
-      () => {
-        setIncomingReady(true);
-      },
-      () => {
-        setIncomingReady(true);
-      },
-    );
-  }, [incomingIndex, previewItems]);
 
   const showItem = useCallback(
     (index: number, direction: "down" | "up") => {
@@ -504,6 +472,7 @@ export function PhotoPreviewProvider({
     lockedPreviewIndexRef.current = index;
     setActiveIndex(index);
     setIncomingIndex(null);
+    setIncomingReady(false);
     setActiveMenuItemId(menuItemId);
 
     requestAnimationFrame(() => {
@@ -548,6 +517,7 @@ export function PhotoPreviewProvider({
       flipStateRef.current = Flip.getState(stage);
       flipPendingRef.current = "close";
       closeFinishRef.current = finishClose;
+      setIsFlipping(true);
       setIsOpen(false);
     };
 
@@ -574,6 +544,7 @@ export function PhotoPreviewProvider({
       if (index !== undefined) {
         setActiveIndex(index);
         setIncomingIndex(null);
+        setIncomingReady(false);
       }
 
       const stage = viewerStageRef.current;
@@ -591,6 +562,7 @@ export function PhotoPreviewProvider({
 
       flipStateRef.current = Flip.getState(stage);
       flipPendingRef.current = "open";
+      setIsFlipping(true);
       setIsOpen(true);
     },
     [animateChromeEnter, hideChrome],

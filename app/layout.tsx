@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Archivo_Black, IBM_Plex_Mono } from "next/font/google";
 import { SmoothScroll } from "@/components/SmoothScroll";
+import { absoluteUrl, siteDescription, siteName, siteUrl } from "@/lib/seo";
 import "lenis/dist/lenis.css";
 import "./globals.css";
 
@@ -19,8 +20,31 @@ const archivoBlack = Archivo_Black({
 });
 
 export const metadata: Metadata = {
-  title: "Mon Nom Bakery",
-  description: "Mobile-first bakery landing page and menu.",
+  metadataBase: siteUrl,
+  title: {
+    default: siteName,
+    template: `%s | ${siteName}`,
+  },
+  description: siteDescription,
+  alternates: {
+    canonical: absoluteUrl("/"),
+  },
+  openGraph: {
+    title: siteName,
+    description: siteDescription,
+    url: absoluteUrl("/"),
+    siteName,
+    images: [
+      {
+        url: absoluteUrl("/menu/photos/sniadanie-losos.jpeg"),
+        width: 1200,
+        height: 630,
+        alt: "Sniadanie z lososiem i awokado w Mon Nom Bakery",
+      },
+    ],
+    locale: "pl_PL",
+    type: "website",
+  },
 };
 
 export default function RootLayout({

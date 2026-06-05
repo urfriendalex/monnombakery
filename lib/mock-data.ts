@@ -11,7 +11,7 @@ export const mockMenuData: MenuPageData = {
     instagramUrl: "https://www.instagram.com/monnom_bakery?igsh=MW5kMHBnaGJwNXljbw==",
     openingHoursWeekdays: "10:00 - 15:00",
     openingHoursWeekend: "9:00 - 15:00",
-    footerNote: "Zamówienie można złożyć online",
+    footerNote: "Zamówienie można złożyć przy kasie",
     seoTitle: "Mon Nom Bakery Menu",
     seoDescription: "Minimalne menu śniadaniowe Mon Nom Bakery.",
   },

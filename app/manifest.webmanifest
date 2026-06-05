@@ -1,0 +1,22 @@
+{
+  "name": "Mon Nom Bakery",
+  "short_name": "Mon Nom",
+  "description": "Mon Nom Bakery w Warszawie serwuje sezonowe sniadania, kawe, matcha i wypieki z aktualnym menu online.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
