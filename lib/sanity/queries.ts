@@ -31,6 +31,8 @@ export const restaurantSettingsQuery = `*[_type == "restaurantSettings"][0]{
   reservationUrl,
   openingHoursWeekdays,
   openingHoursWeekend,
+  brunchHoursWeekdays,
+  brunchHoursWeekend,
   footerNote,
   seoTitle,
   seoDescription

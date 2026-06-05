@@ -34,6 +34,8 @@ export type RestaurantSettings = {
   reservationUrl?: string;
   openingHoursWeekdays?: string;
   openingHoursWeekend?: string;
+  brunchHoursWeekdays?: string;
+  brunchHoursWeekend?: string;
   footerNote?: string;
   seoTitle?: string;
   seoDescription?: string;

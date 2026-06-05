@@ -17,6 +17,8 @@ export const restaurantSettings = defineType({
     defineField({ name: "reservationUrl", type: "url" }),
     defineField({ name: "openingHoursWeekdays", type: "string" }),
     defineField({ name: "openingHoursWeekend", type: "string" }),
+    defineField({ name: "brunchHoursWeekdays", type: "string" }),
+    defineField({ name: "brunchHoursWeekend", type: "string" }),
     defineField({ name: "footerNote", type: "string" }),
     defineField({ name: "seoTitle", type: "string" }),
     defineField({ name: "seoDescription", type: "text" }),
