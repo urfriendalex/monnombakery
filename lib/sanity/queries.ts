@@ -3,6 +3,8 @@ import { applyMenuPhotoManifest } from "@/lib/menu-photo-manifest";
 import { getSanityClient, hasSanityConfig } from "@/lib/sanity/client";
 import type { MenuPageData } from "@/types/menu";
 
+const canUseMockData = process.env.NODE_ENV !== "production";
+
 export const restaurantSettingsQuery = `*[_type == "restaurantSettings"][0]{
   _id,
   name,
@@ -106,6 +108,10 @@ export const visibleMenuItemsQuery = `*[
 
 export async function getMenuPageData(): Promise<MenuPageData> {
   if (!hasSanityConfig) {
+    if (!canUseMockData) {
+      throw new Error("Missing Sanity configuration in production.");
+    }
+
     return {
       ...mockMenuData,
       items: applyMenuPhotoManifest(mockMenuData.items),
@@ -121,14 +127,25 @@ export async function getMenuPageData(): Promise<MenuPageData> {
       client.fetch(visibleMenuItemsQuery),
     ]);
 
+    if (!settings && !canUseMockData) {
+      throw new Error("Missing restaurantSettings document in Sanity.");
+    }
+
     return {
       settings: settings ?? mockMenuData.settings,
-      groups: groups.length ? groups : mockMenuData.groups,
-      categories: categories.length ? categories : mockMenuData.categories,
-      items: items.length ? items : applyMenuPhotoManifest(mockMenuData.items),
+      groups,
+      categories,
+      items,
     };
   } catch (error) {
+    if (!canUseMockData) {
+      throw error;
+    }
+
     console.warn("Falling back to mock menu data:", error);
-    return mockMenuData;
+    return {
+      ...mockMenuData,
+      items: applyMenuPhotoManifest(mockMenuData.items),
+    };
   }
 }
