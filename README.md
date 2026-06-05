@@ -75,7 +75,7 @@ Use dataset `production` unless you intentionally want another dataset name.
 2. Add local environment variables in `.env.local`:
 
 ```bash
-NEXT_PUBLIC_SANITY_PROJECT_ID=your_project_id
+NEXT_PUBLIC_SANITY_PROJECT_ID=
 NEXT_PUBLIC_SANITY_DATASET=production
 NEXT_PUBLIC_SANITY_API_VERSION=2026-05-21
 SANITY_API_WRITE_TOKEN=temporary_write_token
@@ -100,15 +100,16 @@ Open `http://localhost:3000` for the site and `http://localhost:3000/studio` for
 5. Add CORS origins in Sanity Manage:
 
 - `http://localhost:3000` for local Studio testing.
-- Your production domain, for example `https://your-domain.com`.
+- Your production domain, `https://www.monnombakery.com`.
 - Your Vercel preview domain pattern if you want preview deployments to use Studio.
 
 6. Deploy the website to Vercel or another Next.js host. Set these production environment variables:
 
 ```bash
-NEXT_PUBLIC_SANITY_PROJECT_ID=your_project_id
+NEXT_PUBLIC_SANITY_PROJECT_ID=
 NEXT_PUBLIC_SANITY_DATASET=production
 NEXT_PUBLIC_SANITY_API_VERSION=2026-05-21
+NEXT_PUBLIC_SITE_URL=https://www.monnombakery.com
 ```
 
 Do not add `SANITY_API_WRITE_TOKEN` to production unless you later build server-side write workflows.
