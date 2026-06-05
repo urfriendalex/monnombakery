@@ -8,6 +8,7 @@
   --active-line: #f8d32b;
   --edge-line: #b9b9b4;
   --menu-max-width: 460px;
+  --shell-width: clamp(320px, 100vw, var(--menu-max-width));
   --page-padding: clamp(20px, 7vw, 30px);
   --space-xs: 0.35rem;
   --space-sm: 0.75rem;
