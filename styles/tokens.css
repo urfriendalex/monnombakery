@@ -24,6 +24,6 @@
   --text-price: 1.78rem;
   --thin-line: 1px;
   --dashed-line: 1px dashed var(--line);
-  --active-dashed-line: 1px dashed var(--active-line);
+  --active-dashed-line: 2px dashed var(--active-line);
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 }

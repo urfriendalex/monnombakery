@@ -644,11 +644,14 @@ img {
   grid-template-columns: minmax(0, 1fr) auto;
   column-gap: var(--space-sm);
   padding: 0 0 var(--space-sm);
+  border-bottom: var(--dashed-line);
+  transition:
+    padding-inline 160ms var(--ease-out),
+    margin-inline 160ms var(--ease-out);
 }
 
 .menu-item + .menu-item {
   padding-top: var(--space-sm);
-  border-top: var(--dashed-line);
 }
 
 .menu-item:last-child {
@@ -657,10 +660,8 @@ img {
 
 .menu-item[data-viewer-active="true"] {
   border-bottom: var(--active-dashed-line);
-}
-
-.menu-item[data-viewer-active="true"] + .menu-item {
-  border-top: var(--active-dashed-line);
+  padding-inline: calc(0.85 * var(--page-padding));
+  margin-inline: calc(-0.85 * var(--page-padding));
 }
 
 .menu-item[data-viewer-active="true"] .item-name,
