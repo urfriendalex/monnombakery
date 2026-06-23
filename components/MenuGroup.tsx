@@ -1,3 +1,4 @@
+import { getCategoryItemsInPageOrder } from "@/lib/menu-order";
 import { MenuSection } from "@/components/MenuSection";
 import type { MenuCategory, MenuGroup as MenuGroupType, MenuItem } from "@/types/menu";
 
@@ -17,7 +18,7 @@ export function MenuGroup({ group, categories, items }: MenuGroupProps) {
         <MenuSection
           key={category._id}
           category={category}
-          items={items.filter((item) => item.category._ref === category._id)}
+          items={getCategoryItemsInPageOrder(category._id, items)}
         />
       ))}
     </section>

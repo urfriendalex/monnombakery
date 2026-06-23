@@ -139,6 +139,15 @@ export default async function Home() {
               <span aria-hidden="true">/03</span>
             </a>
           ) : null}
+          <a
+            className="landing-link landing-link-tip"
+            href="https://globaltips.io/t/313459?app"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <span>Leave a tip</span>
+            <span aria-hidden="true">/04</span>
+          </a>
         </nav>
 
         <section className="landing-info" aria-labelledby="info-heading">

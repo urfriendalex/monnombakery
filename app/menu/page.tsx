@@ -81,7 +81,11 @@ export default async function Home() {
   };
 
   return (
-    <PhotoPreviewProvider items={items}>
+    <PhotoPreviewProvider
+      groups={groups}
+      categories={visibleCategories}
+      items={items}
+    >
       <SiteShell>
         <script
           type="application/ld+json"

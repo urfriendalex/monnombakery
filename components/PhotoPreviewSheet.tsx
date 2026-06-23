@@ -4,8 +4,9 @@ import Image from "next/image";
 import { gsap } from "gsap";
 import { Flip } from "gsap/Flip";
 import { imageUrlFor } from "@/lib/sanity/image";
+import { getMenuPhotoItemsInPageOrder } from "@/lib/menu-order";
 import { createPreviewImagePreloader } from "@/lib/preview-image-preload";
-import type { MenuItem } from "@/types/menu";
+import type { MenuCategory, MenuGroup, MenuItem } from "@/types/menu";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 gsap.registerPlugin(Flip);
@@ -46,29 +47,25 @@ function scrollMenuItemToMarker(
 
 export function PhotoPreviewProvider({
   children,
+  groups,
+  categories,
   items,
 }: {
   children: React.ReactNode;
+  groups: MenuGroup[];
+  categories: MenuCategory[];
   items: MenuItem[];
 }) {
   const previewItems = useMemo(
     () =>
-      items.flatMap((item) => {
-        const imageUrl = imageUrlFor(item.image, 1600);
-
-        return imageUrl
-          ? [
-              {
-                id: item._id,
-                title: item.name,
-                description: item.description,
-                imageUrl,
-                imageAlt: item.imageAlt ?? item.image?.alt ?? item.name,
-              },
-            ]
-          : [];
-      }),
-    [items],
+      getMenuPhotoItemsInPageOrder(groups, categories, items).map((item) => ({
+        id: item._id,
+        title: item.name,
+        description: item.description,
+        imageUrl: imageUrlFor(item.image, 1600)!,
+        imageAlt: item.imageAlt ?? item.image?.alt ?? item.name,
+      })),
+    [categories, groups, items],
   );
   const [activeIndex, setActiveIndex] = useState(0);
   const [incomingIndex, setIncomingIndex] = useState<number | null>(null);

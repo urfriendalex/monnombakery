@@ -424,6 +424,30 @@ img {
   color: var(--text-intense);
 }
 
+.landing-link-tip {
+  min-height: 78px;
+  border: 1px solid var(--monnom-green);
+  background-color: var(--monnom-green);
+  color: var(--background);
+}
+
+.landing-link-tip span:last-child {
+  color: rgba(255, 254, 250, 0.72);
+}
+
+.landing-link-tip:hover,
+.landing-link-tip:focus-visible {
+  border-color: var(--monnom-green-dark);
+  background-color: var(--monnom-green-dark);
+  color: var(--background);
+  outline: none;
+}
+
+.landing-link-tip:hover span:last-child,
+.landing-link-tip:focus-visible span:last-child {
+  color: var(--background);
+}
+
 .landing-info {
   padding-top: var(--space-md);
 }

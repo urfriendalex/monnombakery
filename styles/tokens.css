@@ -6,6 +6,8 @@
   --muted: #5f5f5d;
   --line: #2a2a2a;
   --active-line: #f8d32b;
+  --monnom-green: #00b26b;
+  --monnom-green-dark: #009a5c;
   --edge-line: #b9b9b4;
   --menu-max-width: 460px;
   --shell-width: clamp(320px, 100vw, var(--menu-max-width));
