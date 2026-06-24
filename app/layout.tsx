@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
-import { Archivo_Black, IBM_Plex_Mono } from "next/font/google";
+import localFont from "next/font/local";
+import { Archivo_Black } from "next/font/google";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { absoluteUrl, siteDescription, siteName, siteUrl } from "@/lib/seo";
 import "lenis/dist/lenis.css";
 import "./globals.css";
 
-const plexMono = IBM_Plex_Mono({
+const monnomPrint = localFont({
+  src: "./fonts/monnom_print.woff",
   variable: "--font-body",
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
   display: "swap",
+  adjustFontFallback: false,
 });
 
 const archivoBlack = Archivo_Black({
@@ -55,7 +56,7 @@ export default function RootLayout({
   return (
     <html
       lang="pl"
-      className={`${plexMono.variable} ${archivoBlack.variable} h-full antialiased`}
+      className={`${monnomPrint.variable} ${archivoBlack.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <SmoothScroll>{children}</SmoothScroll>
