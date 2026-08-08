@@ -9,7 +9,8 @@
     "lint": "eslint",
     "studio": "sanity dev --port 3333",
     "studio:deploy": "sanity deploy",
-    "sanity:seed": "node --env-file=.env.local scripts/seed-sanity.mjs"
+    "sanity:seed": "node --env-file=.env.local scripts/seed-sanity.mjs",
+    "sanity:translate": "node --env-file=.env.local scripts/populate-english-translations.mjs"
   },
   "dependencies": {
     "@sanity/client": "^7.22.0",

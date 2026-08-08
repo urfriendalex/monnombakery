@@ -7,6 +7,7 @@ import { imageUrlFor } from "@/lib/sanity/image";
 import { getMenuPhotoItemsInPageOrder } from "@/lib/menu-order";
 import { createPreviewImagePreloader } from "@/lib/preview-image-preload";
 import type { MenuCategory, MenuGroup, MenuItem } from "@/types/menu";
+import { ui, type Locale } from "@/lib/i18n";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 gsap.registerPlugin(Flip);
@@ -50,12 +51,15 @@ export function PhotoPreviewProvider({
   groups,
   categories,
   items,
+  locale,
 }: {
   children: React.ReactNode;
   groups: MenuGroup[];
   categories: MenuCategory[];
   items: MenuItem[];
+  locale: Locale;
 }) {
+  const copy = ui[locale];
   const previewItems = useMemo(
     () =>
       getMenuPhotoItemsInPageOrder(groups, categories, items).map((item) => ({
@@ -766,13 +770,13 @@ export function PhotoPreviewProvider({
               className="viewer-dismiss-hint"
               aria-hidden="true"
             >
-              Przesuń w lewo, aby ukryć
+              {copy.swipeToHide}
             </div>
             <button
               ref={previewButtonRef}
               className="viewer-image-button"
               type="button"
-              aria-label={`Otwórz zdjęcie: ${displayItem.title}`}
+              aria-label={`${copy.openPhoto}: ${displayItem.title}`}
               onClick={() => {
                 if (!pointerDraggedRef.current) {
                   openPreview();
@@ -831,11 +835,11 @@ export function PhotoPreviewProvider({
             </div>
           </div>
           <div ref={controlsRef} className="viewer-controls">
-            <button type="button" onClick={showPrevious} aria-label="Poprzednie zdjęcie">
+            <button type="button" onClick={showPrevious} aria-label={copy.previousPhoto}>
               ←
             </button>
             <span aria-live="polite">{displayIndex + 1} / {previewItems.length}</span>
-            <button type="button" onClick={showNext} aria-label="Następne zdjęcie">
+            <button type="button" onClick={showNext} aria-label={copy.nextPhoto}>
               →
             </button>
           </div>
@@ -843,7 +847,7 @@ export function PhotoPreviewProvider({
             ref={closeButtonRef}
             className="viewer-close"
             type="button"
-            aria-label="Zamknij podgląd zdjęcia"
+            aria-label={copy.closePhoto}
             onClick={closePreview}
           >
             <span aria-hidden="true">×</span>

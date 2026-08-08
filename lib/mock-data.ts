@@ -1,4 +1,5 @@
 import type { MenuPageData } from "@/types/menu";
+import englishTranslations from "@/content/english-translations.json";
 
 export const mockMenuData: MenuPageData = {
   settings: {
@@ -279,3 +280,11 @@ export const mockMenuData: MenuPageData = {
     },
   ],
 };
+
+type TranslationFields = Record<string, string | string[]>;
+const translations = englishTranslations as Record<string, TranslationFields>;
+
+Object.assign(mockMenuData.settings, translations["restaurant-settings"]);
+mockMenuData.groups.forEach((document) => Object.assign(document, translations[document._id]));
+mockMenuData.categories.forEach((document) => Object.assign(document, translations[document._id]));
+mockMenuData.items.forEach((document) => Object.assign(document, translations[document._id]));

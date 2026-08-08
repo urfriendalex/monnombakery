@@ -22,6 +22,9 @@ const rootDir = path.resolve(__dirname, "..");
 const photoManifest = JSON.parse(
   readFileSync(path.join(rootDir, "public/menu/photos/manifest.json"), "utf8"),
 );
+const englishTranslations = JSON.parse(
+  readFileSync(path.join(rootDir, "content/english-translations.json"), "utf8"),
+);
 
 const documents = [
   {
@@ -108,7 +111,11 @@ async function attachMenuImages(document) {
   };
 }
 
-const seededDocuments = await Promise.all(documents.map(attachMenuImages));
+const translatedDocuments = documents.map((document) => ({
+  ...document,
+  ...englishTranslations[document._id],
+}));
+const seededDocuments = await Promise.all(translatedDocuments.map(attachMenuImages));
 
 let transaction = client.transaction();
 for (const document of seededDocuments) {

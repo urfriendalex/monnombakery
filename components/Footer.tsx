@@ -1,7 +1,10 @@
 import type { RestaurantSettings } from "@/types/menu";
 import Image from "next/image";
+import { LanguageSwitch } from "@/components/LanguageSwitch";
+import { ui, type Locale } from "@/lib/i18n";
 
-export function Footer({ settings }: { settings: RestaurantSettings }) {
+export function Footer({ settings, locale, path }: { settings: RestaurantSettings; locale: Locale; path: "/" | "/menu" }) {
+  const copy = ui[locale];
   return (
     <footer className="menu-footer">
       {settings.footerNote ? (
@@ -10,7 +13,7 @@ export function Footer({ settings }: { settings: RestaurantSettings }) {
 
       <div className="footer-grid">
         <section aria-labelledby="address-heading">
-          <h2 id="address-heading">Adres</h2>
+          <h2 id="address-heading">{copy.address}</h2>
           {settings.address ? (
             <a href={settings.mapUrl} target="_blank" rel="noreferrer">
               {settings.address.replace(", ", ",\n")}
@@ -26,6 +29,8 @@ export function Footer({ settings }: { settings: RestaurantSettings }) {
           ) : null}
         </section>
       </div>
+
+      <LanguageSwitch locale={locale} path={path} placement="footer" />
 
       <Image
         className="decorative-logo"

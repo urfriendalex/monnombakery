@@ -11,6 +11,7 @@ npm run dev
 npm run build
 npm run lint
 npm run studio
+npm run sanity:translate
 ```
 
 ## Sanity
@@ -50,14 +51,22 @@ open http://localhost:3000/studio
 
 Schema files live in `sanity/schemas`. Price fields are strings so menu values like `16/19` or `21/25` remain valid.
 
+Polish is the default language at `/` and `/menu`. The full English experience is available at `/en` and `/en/menu`. Editors manage Polish in the existing fields and English in the adjacent `English` fields/group. Public English pages fall back to Polish for any newly added content whose translation is temporarily empty.
+
+Initial English translations are versioned in `content/english-translations.json`. To apply them to an existing dataset without replacing documents or images, run:
+
+```bash
+npm run sanity:translate
+```
+
 ### Content model
 
 The Studio is organized around:
 
-- `Restaurant Settings`: singleton document for brand, address, contact links, opening hours, footer copy, and SEO text.
-- `Menu Groups`: top-level menu groupings, currently `Menu`.
-- `Menu Categories`: sections such as `Śniadania`, `Owsianki`, `Sandwicze`, `Kawa`, and `Matcha`.
-- `Menu Items`: editable title, slug, category, description, primary/secondary prices, main image, gallery images, alt text, dietary labels, badge label, serving note, tags, allergens, visibility, availability, featured state, and display order.
+- `Restaurant Settings`: singleton document for brand, address, contact links, opening hours, bilingual footer copy, and bilingual SEO text.
+- `Menu Groups`: top-level menu groupings, with Polish and English titles.
+- `Menu Categories`: sections such as `Śniadania`, `Owsianki`, `Sandwicze`, `Kawa`, and `Matcha`, with paired English content.
+- `Menu Items`: editable Polish and English titles, descriptions, alt text, labels, notes, tags, and allergens, plus shared slug, category, prices, images, visibility, availability, featured state, and display order.
 
 The seed script uploads local files from `public/menu/photos` into Sanity image assets and attaches them to the matching menu items using `public/menu/photos/manifest.json`.
 

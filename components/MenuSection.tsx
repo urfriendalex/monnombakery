@@ -1,12 +1,14 @@
 import { MenuItem } from "@/components/MenuItem";
 import type { MenuCategory, MenuItem as MenuItemType } from "@/types/menu";
+import type { Locale } from "@/lib/i18n";
 
 type MenuSectionProps = {
   category: MenuCategory;
   items: MenuItemType[];
+  locale: Locale;
 };
 
-export function MenuSection({ category, items }: MenuSectionProps) {
+export function MenuSection({ category, items, locale }: MenuSectionProps) {
   if (items.length === 0) {
     return null;
   }
@@ -25,7 +27,7 @@ export function MenuSection({ category, items }: MenuSectionProps) {
         <p className="section-description">{category.description}</p>
       ) : null}
       {items.map((item) => (
-        <MenuItem key={item._id} item={item} />
+        <MenuItem key={item._id} item={item} locale={locale} />
       ))}
     </section>
   );
