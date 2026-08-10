@@ -62,6 +62,14 @@ img {
   min-height: 100vh;
   margin: 0 auto;
   background: var(--background);
+}
+
+.shell-logo-link,
+.menu-header,
+.menu-navigation,
+.menu-stack,
+.landing-stack,
+.menu-footer {
   border-inline: var(--thin-line) solid var(--edge-line);
 }
 

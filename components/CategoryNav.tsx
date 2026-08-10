@@ -33,7 +33,7 @@ export function CategoryNav({
   const categoryButtonRefs = useRef(new Map<string, HTMLButtonElement>());
   const pendingSlugRef = useRef<string | undefined>(undefined);
   const pendingTimeoutRef = useRef<number | undefined>(undefined);
-  const animateIndicatorRef = useRef(true);
+  const animateIndicatorRef = useRef(false);
 
   useLayoutEffect(() => {
     const nav = categoryNavRef.current;
