@@ -13,15 +13,17 @@ export function CategoryNav({
   categories: MenuCategory[];
   locale: Locale;
 }) {
-  const [activeGroupId, setActiveGroupId] = useState(groups[0]?._id);
-  const [activeSlug, setActiveSlug] = useState(categories[0]?.slug);
+  const orderedCategories = useMemo(
+    () =>
+      groups.flatMap((group) =>
+        categories.filter((category) => category.group._ref === group._id),
+      ),
+    [categories, groups],
+  );
+  const [activeSlug, setActiveSlug] = useState(orderedCategories[0]?.slug);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const categoryNavRef = useRef<HTMLElement>(null);
   const categoryButtonRefs = useRef(new Map<string, HTMLButtonElement>());
-  const activeCategories = useMemo(
-    () => categories.filter((category) => category.group._ref === activeGroupId),
-    [activeGroupId, categories],
-  );
 
   useEffect(() => {
     const nav = categoryNavRef.current;
@@ -42,13 +44,13 @@ export function CategoryNav({
         behavior: "smooth",
       });
     }
-  }, [activeGroupId, activeSlug]);
+  }, [activeSlug]);
 
   useEffect(() => {
     const groupSections = groups
       .map((group) => document.getElementById(group.slug))
       .filter((section): section is HTMLElement => section !== null);
-    const categorySections = categories
+    const categorySections = orderedCategories
       .map((category) => document.getElementById(category.slug))
       .filter((section): section is HTMLElement => section !== null);
     let frameId: number | undefined;
@@ -73,7 +75,6 @@ export function CategoryNav({
         ? groupSections[groupSections.length - 1]
         : lastReached(groupSections, activationLine);
       const groupId = groupSection?.dataset.menuGroupId;
-
       if (!groupId) return;
 
       const groupCategories = categorySections.filter(
@@ -83,7 +84,6 @@ export function CategoryNav({
         ? groupCategories[groupCategories.length - 1]
         : lastReached(groupCategories, activationLine);
 
-      setActiveGroupId(groupId);
       if (categorySection?.id) setActiveSlug(categorySection.id);
     };
 
@@ -102,40 +102,16 @@ export function CategoryNav({
       window.removeEventListener("resize", requestUpdate);
       if (frameId !== undefined) window.cancelAnimationFrame(frameId);
     };
-  }, [categories, groups]);
+  }, [groups, orderedCategories]);
 
   return (
     <div ref={wrapperRef} className="menu-navigation">
-      <nav className="group-nav" aria-label={ui[locale].menuGroups}>
-        {groups.map((group) => (
-          <button
-            key={group._id}
-            className="group-link"
-            type="button"
-            aria-current={activeGroupId === group._id}
-            onClick={() => {
-              const firstCategory = categories.find(
-                (category) => category.group._ref === group._id,
-              );
-              setActiveGroupId(group._id);
-              if (firstCategory) setActiveSlug(firstCategory.slug);
-              document.getElementById(group.slug)?.scrollIntoView({
-                block: "start",
-                behavior: "smooth",
-              });
-            }}
-          >
-            {group.title}
-          </button>
-        ))}
-      </nav>
-
       <nav
         ref={categoryNavRef}
         className="category-nav"
         aria-label={ui[locale].menuCategories}
       >
-        {activeCategories.map((category) => (
+        {orderedCategories.map((category) => (
           <button
             key={category._id}
             ref={(button) => {

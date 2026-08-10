@@ -18,9 +18,7 @@ export function MenuGroup({ group, categories, items, locale }: MenuGroupProps) 
       data-menu-group-id={group._id}
       aria-labelledby={`${group.slug}-heading`}
     >
-      <div className="group-heading">
-        <h2 id={`${group.slug}-heading`}>{group.title}</h2>
-      </div>
+      <h2 className="sr-only" id={`${group.slug}-heading`}>{group.title}</h2>
       {categories.map((category) => (
         <MenuSection
           key={category._id}
