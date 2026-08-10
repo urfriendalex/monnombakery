@@ -67,12 +67,16 @@ export async function HomeExperience({ locale }: { locale: Locale }) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
       <main aria-label="Start" className="landing-stack">
-        <LanguageSwitch locale={locale} path="/" placement="home" />
-        <Link className="landing-intro landing-intro-link" href={menuPath} aria-labelledby="landing-heading">
-          <p className="landing-kicker">mon nom bakery</p>
-          <h1 id="landing-heading">{copy.homeHeading}</h1>
-          <p className="landing-description">{settings.description ?? copy.homeDescription}</p>
-        </Link>
+        <section className="landing-intro" aria-labelledby="landing-heading">
+          <div className="landing-meta-row">
+            <p className="landing-kicker">mon nom bakery</p>
+            <LanguageSwitch locale={locale} path="/" placement="home" />
+          </div>
+          <Link className="landing-intro-link" href={menuPath}>
+            <h1 id="landing-heading">{copy.homeHeading}</h1>
+            <p className="landing-description">{settings.description ?? copy.homeDescription}</p>
+          </Link>
+        </section>
 
         <nav className="landing-actions" aria-label={copy.quickLinks}>
           <Link className="landing-link landing-link-primary" href={menuPath}>
