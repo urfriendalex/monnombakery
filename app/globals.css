@@ -1264,10 +1264,11 @@ img {
 }
 
 .menu-footer {
+  --footer-inline-padding: 20px;
   position: relative;
   overflow: hidden;
   min-height: calc(var(--shell-width) * 1.52 - 42px);
-  padding: var(--space-lg) 20px 0;
+  padding: var(--space-lg) var(--footer-inline-padding) 0;
   background: #111;
   color: #fff;
 }
@@ -1325,13 +1326,11 @@ img {
 }
 
 .decorative-logo {
-  position: absolute;
-  left: 0;
-  bottom: -1px;
-  z-index: 0;
-  width: 100%;
+  display: block;
+  width: calc(100% + var(--footer-inline-padding) * 2);
   height: auto;
   max-width: none;
+  margin: var(--space-xl) calc(var(--footer-inline-padding) * -1) 0;
 }
 
 @media (min-width: 700px) {
