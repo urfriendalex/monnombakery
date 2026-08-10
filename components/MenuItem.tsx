@@ -45,7 +45,7 @@ export function MenuItem({ item, locale }: { item: MenuItemType; locale: Locale 
         aria-label={`${copy.price} ${item.price}${item.secondaryPrice ? ` / ${item.secondaryPrice}` : ""}`}
       >
         <span className="price">{item.price}</span>
-        {item.secondaryPrice ? <span className="price-separator">/</span> : null}
+        {item.secondaryPrice ? <span className="price-separator" aria-hidden="true" /> : null}
         {item.secondaryPrice ? <span className="secondary-price">{item.secondaryPrice}</span> : null}
       </div>
     </article>

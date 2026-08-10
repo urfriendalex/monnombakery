@@ -860,9 +860,9 @@ img {
 }
 
 .price-separator {
-  color: var(--muted);
-  font-size: 0.76rem;
-  line-height: 1;
+  align-self: center;
+  width: 0.6em;
+  border-top: var(--dashed-line);
 }
 
 .image-viewer {
