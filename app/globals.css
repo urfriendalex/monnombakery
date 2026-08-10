@@ -835,8 +835,8 @@ img {
 
 .price-block {
   display: flex;
-  align-items: baseline;
-  gap: 0.18em;
+  align-items: center;
+  gap: var(--space-xs);
   min-width: 2.7rem;
   text-align: right;
 }
@@ -859,8 +859,7 @@ img {
 }
 
 .price-separator {
-  align-self: center;
-  height: 0.72em;
+  height: 1rem;
   border-left: var(--dashed-line);
 }
 
