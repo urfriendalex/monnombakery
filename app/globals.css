@@ -836,6 +836,7 @@ img {
 .price-block {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: var(--space-xs);
   min-width: 2.7rem;
   text-align: right;
@@ -848,6 +849,10 @@ img {
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.035em;
   line-height: 0.94;
+}
+
+.price-block:has(.secondary-price) .price {
+  color: var(--muted);
 }
 
 .secondary-price {
