@@ -1195,6 +1195,7 @@ img {
   overflow: hidden;
   min-height: calc(var(--shell-width) * 1.52);
   padding: calc(42px + var(--space-lg)) 20px 0;
+  border-inline: 0;
   border-top: 0;
   background:
     linear-gradient(var(--edge-line), var(--edge-line)) left top / var(--thin-line) 14px no-repeat,
@@ -1219,6 +1220,20 @@ img {
   background-position: center top;
   background-repeat: repeat-x;
   background-size: 48px 14px, 48px 42px;
+}
+
+.menu-footer::after {
+  content: "";
+  position: absolute;
+  top: 14px;
+  right: 0;
+  left: 0;
+  z-index: 2;
+  height: 14px;
+  background:
+    linear-gradient(var(--page-background), var(--page-background)) left / 2px 100% no-repeat,
+    linear-gradient(var(--page-background), var(--page-background)) right / 2px 100% no-repeat;
+  pointer-events: none;
 }
 
 .footer-note {
