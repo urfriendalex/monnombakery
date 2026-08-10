@@ -867,7 +867,8 @@ img {
 
 .image-viewer {
   --viewer-bottom-rail: 74px;
-  --viewer-caption-height: 74px;
+  /* Room for 2-line title + 2-line description without clipping reveal masks */
+  --viewer-caption-height: 120px;
   --viewer-content-gap: 16px;
   --viewer-inline-padding: 16px;
   --viewer-top-rail: 72px;
@@ -1004,20 +1005,21 @@ img {
   left: 0;
   width: 100%;
   height: var(--viewer-caption-height);
-  overflow: hidden;
+  /* Reveal clipping lives on each .viewer-caption-line, not the shell */
+  overflow: visible;
   padding-top: 14px;
   color: var(--background);
 }
 
 .viewer-caption h3 {
   overflow: hidden;
-  margin: 0;
+  /* Extra clip room for ascenders/diacritics and descenders */
+  margin: -0.14em 0 -0.22em;
+  padding: 0.14em 0 0.22em;
   font-size: 1.45rem;
   font-weight: 500;
   letter-spacing: -0.025em;
-  line-height: 1;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.15;
 }
 
 .viewer-caption-line {
@@ -1027,6 +1029,14 @@ img {
 .viewer-caption-line > span {
   display: block;
   will-change: transform;
+}
+
+.viewer-caption h3 > span {
+  display: -webkit-box;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .viewer-caption p {
@@ -1042,7 +1052,8 @@ img {
 .viewer-caption-description {
   display: -webkit-box;
   overflow: hidden;
-  min-height: calc(0.76rem * 1.35 * 2);
+  /* Fixed mask height: 2 clamped lines + descender buffer */
+  height: calc(0.76rem * 1.35 * 2 + 0.25em);
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }
