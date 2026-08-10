@@ -860,8 +860,8 @@ img {
 
 .price-separator {
   align-self: center;
-  width: 0.6em;
-  border-top: var(--dashed-line);
+  height: 0.72em;
+  border-left: var(--dashed-line);
 }
 
 .image-viewer {
@@ -1193,8 +1193,10 @@ img {
   padding: calc(42px + var(--space-lg)) 20px 0;
   border-top: 0;
   background:
-    linear-gradient(var(--edge-line), var(--edge-line)) left bottom / var(--thin-line) calc(100% - 42px) no-repeat,
-    linear-gradient(var(--edge-line), var(--edge-line)) right bottom / var(--thin-line) calc(100% - 42px) no-repeat,
+    linear-gradient(var(--edge-line), var(--edge-line)) left top / var(--thin-line) 14px no-repeat,
+    linear-gradient(var(--edge-line), var(--edge-line)) right top / var(--thin-line) 14px no-repeat,
+    linear-gradient(var(--edge-line), var(--edge-line)) left bottom / var(--thin-line) calc(100% - 28px) no-repeat,
+    linear-gradient(var(--edge-line), var(--edge-line)) right bottom / var(--thin-line) calc(100% - 28px) no-repeat,
     #111;
   color: #fff;
 }
