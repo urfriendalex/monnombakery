@@ -12,7 +12,12 @@ type MenuGroupProps = {
 
 export function MenuGroup({ group, categories, items, locale }: MenuGroupProps) {
   return (
-    <section className="menu-group" aria-labelledby={`${group.slug}-heading`}>
+    <section
+      className="menu-group"
+      id={group.slug}
+      data-menu-group-id={group._id}
+      aria-labelledby={`${group.slug}-heading`}
+    >
       <div className="group-heading">
         <h2 id={`${group.slug}-heading`}>{group.title}</h2>
       </div>
@@ -22,6 +27,7 @@ export function MenuGroup({ group, categories, items, locale }: MenuGroupProps) 
           category={category}
           items={getCategoryItemsInPageOrder(category._id, items)}
           locale={locale}
+          groupId={group._id}
         />
       ))}
     </section>

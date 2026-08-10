@@ -17,6 +17,9 @@ export function MenuItem({ item, locale }: { item: MenuItemType; locale: Locale 
         {item.description ? (
           <p className="item-description">{item.description}</p>
         ) : null}
+        {item.servingNote ? (
+          <p className="item-serving-note">{item.servingNote}</p>
+        ) : null}
         {(imageUrl || item.tags?.length) ? (
           <div className="item-meta">
             {imageUrl ? (
@@ -37,11 +40,13 @@ export function MenuItem({ item, locale }: { item: MenuItemType; locale: Locale 
           </div>
         ) : null}
       </div>
-      <div className="price-block" aria-label={`${copy.price} ${item.price}`}>
+      <div
+        className="price-block"
+        aria-label={`${copy.price} ${item.price}${item.secondaryPrice ? ` / ${item.secondaryPrice}` : ""}`}
+      >
         <span className="price">{item.price}</span>
-        {item.secondaryPrice ? (
-          <span className="secondary-price">{item.secondaryPrice}</span>
-        ) : null}
+        {item.secondaryPrice ? <span className="price-separator">/</span> : null}
+        {item.secondaryPrice ? <span className="secondary-price">{item.secondaryPrice}</span> : null}
       </div>
     </article>
   );

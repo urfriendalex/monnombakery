@@ -44,7 +44,7 @@ export async function MenuExperience({ locale }: { locale: Locale }) {
       <SiteShell locale={locale}>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(menuJsonLd) }} />
         <Header settings={settings} locale={locale} />
-        <CategoryNav categories={visibleCategories} locale={locale} />
+        <CategoryNav groups={groups} locale={locale} />
         <main aria-label="Menu" className="menu-stack">
           <h1 className="sr-only">{copy.menuHeading}</h1>
           {groups.map((group) => {
