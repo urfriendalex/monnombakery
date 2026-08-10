@@ -68,7 +68,8 @@ img {
 .menu-header,
 .menu-navigation,
 .menu-stack,
-.landing-stack {
+.landing-stack,
+.menu-footer {
   border-inline: var(--thin-line) solid var(--edge-line);
 }
 
@@ -1196,10 +1197,7 @@ img {
   min-height: calc(var(--shell-width) * 1.52);
   padding: calc(42px + var(--space-lg)) 20px 0;
   border-top: 0;
-  background:
-    linear-gradient(var(--edge-line), var(--edge-line)) left bottom / var(--thin-line) calc(100% - 42px) no-repeat,
-    linear-gradient(var(--edge-line), var(--edge-line)) right bottom / var(--thin-line) calc(100% - 42px) no-repeat,
-    #111;
+  background: #111;
   color: #fff;
 }
 
@@ -1214,9 +1212,23 @@ img {
   background-image:
     url("data:image/svg+xml,%3Csvg width='48' height='14' viewBox='0 0 48 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0L12 14L24 0L36 14L48 0H0Z' fill='%23fffefa'/%3E%3C/svg%3E"),
     var(--receipt-tear-gap-image);
-  background-position: left top;
+  background-position: center top;
   background-repeat: repeat-x;
   background-size: 48px 14px, 48px 42px;
+}
+
+.menu-footer::after {
+  content: "";
+  position: absolute;
+  top: 14px;
+  right: calc(var(--thin-line) * -1);
+  left: calc(var(--thin-line) * -1);
+  z-index: 2;
+  height: 14px;
+  background:
+    linear-gradient(var(--page-background), var(--page-background)) left / 2px 100% no-repeat,
+    linear-gradient(var(--page-background), var(--page-background)) right / 2px 100% no-repeat;
+  pointer-events: none;
 }
 
 .footer-note {
