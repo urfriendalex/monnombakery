@@ -66,15 +66,12 @@ export function CategoryNav({
     if (!nav || !button) return;
 
     const updateIndicator = () => {
-      const navRect = nav.getBoundingClientRect();
-      const buttonRect = button.getBoundingClientRect();
-
       setIndicator({
         animate: animateIndicatorRef.current,
-        scaleX: buttonRect.width,
+        scaleX: button.offsetWidth,
         visible: true,
-        x: nav.scrollLeft + buttonRect.left - navRect.left,
-        y: buttonRect.bottom - navRect.top - 7,
+        x: button.offsetLeft,
+        y: button.offsetTop + button.offsetHeight - 7,
       });
       animateIndicatorRef.current = true;
     };
