@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { ui, type Locale } from "@/lib/i18n";
 import type { MenuCategory, MenuGroup } from "@/types/menu";
 
@@ -21,11 +21,49 @@ export function CategoryNav({
     [categories, groups],
   );
   const [activeSlug, setActiveSlug] = useState(orderedCategories[0]?.slug);
+  const [indicator, setIndicator] = useState({
+    animate: false,
+    scaleX: 0,
+    visible: false,
+    x: 0,
+    y: 0,
+  });
   const wrapperRef = useRef<HTMLDivElement>(null);
   const categoryNavRef = useRef<HTMLElement>(null);
   const categoryButtonRefs = useRef(new Map<string, HTMLButtonElement>());
   const pendingSlugRef = useRef<string | undefined>(undefined);
   const pendingTimeoutRef = useRef<number | undefined>(undefined);
+  const animateIndicatorRef = useRef(true);
+
+  useLayoutEffect(() => {
+    const nav = categoryNavRef.current;
+    const button = activeSlug
+      ? categoryButtonRefs.current.get(activeSlug)
+      : undefined;
+
+    if (!nav || !button) return;
+
+    const updateIndicator = () => {
+      const navRect = nav.getBoundingClientRect();
+      const buttonRect = button.getBoundingClientRect();
+
+      setIndicator({
+        animate: animateIndicatorRef.current,
+        scaleX: buttonRect.width,
+        visible: true,
+        x: nav.scrollLeft + buttonRect.left - navRect.left,
+        y: buttonRect.bottom - navRect.top - 7,
+      });
+      animateIndicatorRef.current = true;
+    };
+
+    updateIndicator();
+    const resizeObserver = new ResizeObserver(updateIndicator);
+    resizeObserver.observe(nav);
+    resizeObserver.observe(button);
+
+    return () => resizeObserver.disconnect();
+  }, [activeSlug]);
 
   useEffect(() => {
     const nav = categoryNavRef.current;
@@ -120,6 +158,15 @@ export function CategoryNav({
         className="category-nav"
         aria-label={ui[locale].menuCategories}
       >
+        <span
+          aria-hidden="true"
+          className="category-indicator"
+          data-animate={indicator.animate}
+          style={{
+            opacity: indicator.visible ? 1 : 0,
+            transform: `translate3d(${indicator.x}px, ${indicator.y}px, 0) scaleX(${indicator.scaleX})`,
+          }}
+        />
         {groups.map((group) => {
           const groupCategories = orderedCategories.filter(
             (category) => category.group._ref === group._id,
@@ -142,7 +189,8 @@ export function CategoryNav({
                   className="category-link"
                   type="button"
                   aria-current={activeSlug === category.slug}
-                  onClick={() => {
+                  onClick={(event) => {
+                    animateIndicatorRef.current = event.detail !== 0;
                     pendingSlugRef.current = category.slug;
                     if (pendingTimeoutRef.current !== undefined) {
                       window.clearTimeout(pendingTimeoutRef.current);
