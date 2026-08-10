@@ -12,6 +12,7 @@ export const ui = {
     homeDescription:
       "Sezonowa piekarnia i śniadaniownia z codziennym menu, kawą i rzeczami do zabrania po drodze.",
     quickLinks: "Szybkie linki",
+    menuCategories: "Kategorie menu",
     menuGroups: "Wybierz część menu",
     leaveTip: "Zostaw napiwek",
     address: "Adres",
@@ -53,6 +54,7 @@ export const ui = {
     homeDescription:
       "A seasonal bakery and brunch spot with a daily menu, coffee, and good things to take with you.",
     quickLinks: "Quick links",
+    menuCategories: "Menu categories",
     menuGroups: "Choose menu section",
     leaveTip: "Leave a tip",
     address: "Address",
