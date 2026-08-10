@@ -6,9 +6,10 @@ type MenuSectionProps = {
   category: MenuCategory;
   items: MenuItemType[];
   locale: Locale;
+  groupId: string;
 };
 
-export function MenuSection({ category, items, locale }: MenuSectionProps) {
+export function MenuSection({ category, items, locale, groupId }: MenuSectionProps) {
   if (items.length === 0) {
     return null;
   }
@@ -19,6 +20,7 @@ export function MenuSection({ category, items, locale }: MenuSectionProps) {
       id={category.slug}
       aria-labelledby={`${category.slug}-heading`}
       data-category-section
+      data-menu-group-id={groupId}
     >
       <h3 className="section-kicker" id={`${category.slug}-heading`}>
         {category.title}

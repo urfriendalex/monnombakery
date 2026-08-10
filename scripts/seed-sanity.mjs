@@ -25,6 +25,9 @@ const photoManifest = JSON.parse(
 const englishTranslations = JSON.parse(
   readFileSync(path.join(rootDir, "content/english-translations.json"), "utf8"),
 );
+const basicDrinksMenu = JSON.parse(
+  readFileSync(path.join(rootDir, "content/basic-drinks-menu.json"), "utf8"),
+);
 
 const documents = [
   {
@@ -111,7 +114,59 @@ async function attachMenuImages(document) {
   };
 }
 
-const translatedDocuments = documents.map((document) => ({
+const documentsById = new Map(documents.map((document) => [document._id, document]));
+documentsById.set(basicDrinksMenu.foodGroup._id, {
+  ...documentsById.get(basicDrinksMenu.foodGroup._id),
+  ...basicDrinksMenu.foodGroup,
+  _type: "menuGroup",
+  slug: slug(basicDrinksMenu.foodGroup.slug),
+});
+documentsById.set(basicDrinksMenu.drinksGroup._id, {
+  ...basicDrinksMenu.drinksGroup,
+  _type: "menuGroup",
+  slug: slug(basicDrinksMenu.drinksGroup.slug),
+});
+
+for (const category of basicDrinksMenu.categories) {
+  const { groupId, ...fields } = category;
+  documentsById.set(category._id, {
+    ...documentsById.get(category._id),
+    ...fields,
+    _type: "menuCategory",
+    slug: slug(category.slug),
+    group: ref(groupId),
+  });
+}
+
+documentsById.set("cat-matcha", {
+  ...documentsById.get("cat-matcha"),
+  group: ref(basicDrinksMenu.drinksGroup._id),
+  isVisible: false,
+});
+
+for (const item of basicDrinksMenu.items) {
+  const { categoryId, ...fields } = item;
+  documentsById.set(item._id, {
+    ...fields,
+    _type: "menuItem",
+    slug: slug(item.slug),
+    category: ref(categoryId),
+    isVisible: true,
+    isAvailable: true,
+    isFeatured: false,
+  });
+}
+
+for (const patch of basicDrinksMenu.existingItemPatches) {
+  const { _id, categoryId, ...fields } = patch;
+  documentsById.set(_id, {
+    ...documentsById.get(_id),
+    ...fields,
+    category: ref(categoryId),
+  });
+}
+
+const translatedDocuments = Array.from(documentsById.values()).map((document) => ({
   ...document,
   ...englishTranslations[document._id],
 }));

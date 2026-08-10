@@ -1,0 +1,258 @@
+{
+  "foodGroup": {
+    "_id": "group-breakfast",
+    "title": "Jedzenie",
+    "titleEn": "Food",
+    "slug": "jedzenie",
+    "order": 1,
+    "isVisible": true
+  },
+  "drinksGroup": {
+    "_id": "group-drinks",
+    "title": "Napoje",
+    "titleEn": "Drinks",
+    "slug": "napoje",
+    "order": 2,
+    "isVisible": true
+  },
+  "categories": [
+    {
+      "_id": "cat-coffee",
+      "title": "Specjały",
+      "titleEn": "Specials",
+      "slug": "specjaly",
+      "groupId": "group-drinks",
+      "order": 1,
+      "isVisible": true
+    },
+    {
+      "_id": "cat-basic-coffee",
+      "title": "Kawa",
+      "titleEn": "Coffee",
+      "slug": "kawa",
+      "groupId": "group-drinks",
+      "order": 2,
+      "isVisible": true
+    },
+    {
+      "_id": "cat-basic-matcha",
+      "title": "Matcha",
+      "titleEn": "Matcha",
+      "slug": "matcha",
+      "groupId": "group-drinks",
+      "order": 3,
+      "isVisible": true
+    },
+    {
+      "_id": "cat-tea",
+      "title": "Herbata",
+      "titleEn": "Tea",
+      "slug": "herbata",
+      "groupId": "group-drinks",
+      "order": 4,
+      "isVisible": true
+    },
+    {
+      "_id": "cat-cold-drinks",
+      "title": "Zimne napoje",
+      "titleEn": "Cold drinks",
+      "slug": "zimne-napoje",
+      "groupId": "group-drinks",
+      "order": 5,
+      "isVisible": true
+    }
+  ],
+  "items": [
+    {
+      "_id": "item-quick-filter",
+      "name": "Szybki przelew",
+      "nameEn": "Quick Filter",
+      "slug": "szybki-przelew",
+      "categoryId": "cat-basic-coffee",
+      "price": "16",
+      "secondaryPrice": "19",
+      "servingNote": "mały / duży",
+      "servingNoteEn": "small / large",
+      "order": 1
+    },
+    {
+      "_id": "item-espresso",
+      "name": "Espresso",
+      "nameEn": "Espresso",
+      "slug": "espresso",
+      "categoryId": "cat-basic-coffee",
+      "price": "14",
+      "order": 2
+    },
+    {
+      "_id": "item-americano",
+      "name": "Americano",
+      "nameEn": "Americano",
+      "slug": "americano",
+      "categoryId": "cat-basic-coffee",
+      "price": "14",
+      "order": 3
+    },
+    {
+      "_id": "item-bumble",
+      "name": "Bumble",
+      "nameEn": "Bumble",
+      "slug": "bumble",
+      "categoryId": "cat-basic-coffee",
+      "price": "21",
+      "secondaryPrice": "25",
+      "servingNote": "mały / duży",
+      "servingNoteEn": "small / large",
+      "order": 4
+    },
+    {
+      "_id": "item-cappuccino",
+      "name": "Cappuccino",
+      "nameEn": "Cappuccino",
+      "slug": "cappuccino",
+      "categoryId": "cat-basic-coffee",
+      "price": "16",
+      "secondaryPrice": "18",
+      "servingNote": "mały / duży",
+      "servingNoteEn": "small / large",
+      "order": 5
+    },
+    {
+      "_id": "item-latte",
+      "name": "Latte",
+      "nameEn": "Latte",
+      "slug": "latte",
+      "categoryId": "cat-basic-coffee",
+      "price": "18",
+      "order": 6
+    },
+    {
+      "_id": "item-flat-white",
+      "name": "Flat White",
+      "nameEn": "Flat White",
+      "slug": "flat-white",
+      "categoryId": "cat-basic-coffee",
+      "price": "20",
+      "order": 7
+    },
+    {
+      "_id": "item-raf",
+      "name": "Raf",
+      "nameEn": "Raf",
+      "slug": "raf",
+      "categoryId": "cat-basic-coffee",
+      "price": "21",
+      "order": 8
+    },
+    {
+      "_id": "item-raf-salted-caramel",
+      "name": "Raf słony karmel",
+      "nameEn": "Salted Caramel Raf",
+      "slug": "raf-slony-karmel",
+      "categoryId": "cat-basic-coffee",
+      "price": "23",
+      "order": 9
+    },
+    {
+      "_id": "item-matcha-latte",
+      "name": "Matcha Latte",
+      "nameEn": "Matcha Latte",
+      "slug": "matcha-latte",
+      "categoryId": "cat-basic-matcha",
+      "price": "21",
+      "order": 1
+    },
+    {
+      "_id": "item-matcha-orange",
+      "name": "Matcha Orange",
+      "nameEn": "Matcha Orange",
+      "slug": "matcha-orange",
+      "categoryId": "cat-basic-matcha",
+      "price": "26",
+      "order": 3
+    },
+    {
+      "_id": "item-green-tea",
+      "name": "Herbata zielona",
+      "nameEn": "Green Tea",
+      "slug": "herbata-zielona",
+      "categoryId": "cat-tea",
+      "price": "17",
+      "order": 1
+    },
+    {
+      "_id": "item-earl-grey",
+      "name": "Earl Grey",
+      "nameEn": "Earl Grey",
+      "slug": "earl-grey",
+      "categoryId": "cat-tea",
+      "price": "17",
+      "order": 2
+    },
+    {
+      "_id": "item-fresh-orange",
+      "name": "Fresh pomarańczowy",
+      "nameEn": "Fresh Orange Juice",
+      "slug": "fresh-pomaranczowy",
+      "categoryId": "cat-cold-drinks",
+      "price": "22",
+      "order": 1
+    },
+    {
+      "_id": "item-kombucha",
+      "name": "Kombucza",
+      "nameEn": "Kombucha",
+      "slug": "kombucza",
+      "categoryId": "cat-cold-drinks",
+      "price": "17",
+      "order": 2
+    },
+    {
+      "_id": "item-kinley-tonic",
+      "name": "Kinley Tonic",
+      "nameEn": "Kinley Tonic",
+      "slug": "kinley-tonic",
+      "categoryId": "cat-cold-drinks",
+      "price": "12",
+      "order": 3
+    },
+    {
+      "_id": "item-water",
+      "name": "Woda",
+      "nameEn": "Water",
+      "slug": "woda",
+      "categoryId": "cat-cold-drinks",
+      "price": "10",
+      "order": 4
+    },
+    {
+      "_id": "item-juice",
+      "name": "Sok",
+      "nameEn": "Juice",
+      "slug": "sok",
+      "categoryId": "cat-cold-drinks",
+      "price": "13",
+      "order": 5
+    },
+    {
+      "_id": "item-soft-drinks",
+      "name": "Coke / Fanta / Sprite",
+      "nameEn": "Coke / Fanta / Sprite",
+      "slug": "coke-fanta-sprite",
+      "categoryId": "cat-cold-drinks",
+      "price": "13",
+      "order": 6
+    }
+  ],
+  "existingItemPatches": [
+    { "_id": "item-espresso-tonic", "categoryId": "cat-coffee", "order": 1 },
+    { "_id": "item-citrus-coffee", "categoryId": "cat-coffee", "order": 2 },
+    { "_id": "item-filter-tonic", "categoryId": "cat-coffee", "order": 3 },
+    { "_id": "item-ice-filter", "categoryId": "cat-coffee", "order": 4 },
+    { "_id": "item-ice-latte-sesame", "categoryId": "cat-coffee", "order": 5 },
+    { "_id": "item-tropical-matcha", "categoryId": "cat-coffee", "order": 6 },
+    { "_id": "item-ice-matcha-latte", "categoryId": "cat-coffee", "order": 7 },
+    { "_id": "item-ice-matcha-sesame", "categoryId": "cat-coffee", "order": 8 },
+    { "_id": "item-matcha-tonic", "categoryId": "cat-coffee", "price": "23", "order": 9 }
+  ]
+}

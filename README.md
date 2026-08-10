@@ -12,6 +12,7 @@ npm run build
 npm run lint
 npm run studio
 npm run sanity:translate
+npm run sanity:drinks
 ```
 
 ## Sanity
@@ -58,6 +59,14 @@ Initial English translations are versioned in `content/english-translations.json
 ```bash
 npm run sanity:translate
 ```
+
+The everyday bilingual drinks menu is versioned in `content/basic-drinks-menu.json`. Apply it to an existing dataset with:
+
+```bash
+npm run sanity:drinks
+```
+
+This creates the Drinks group and its basic items, moves the existing seasonal drinks under Specials, and updates the canonical Matcha Tonic price to 23 PLN.
 
 ### Content model
 

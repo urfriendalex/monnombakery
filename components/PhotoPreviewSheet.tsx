@@ -9,6 +9,7 @@ import { createPreviewImagePreloader } from "@/lib/preview-image-preload";
 import type { MenuCategory, MenuGroup, MenuItem } from "@/types/menu";
 import { ui, type Locale } from "@/lib/i18n";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 
 gsap.registerPlugin(Flip);
 
@@ -76,6 +77,7 @@ export function PhotoPreviewProvider({
   const [activeMenuItemId, setActiveMenuItemId] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
+  const [isActiveItemWithoutPhoto, setIsActiveItemWithoutPhoto] = useState(false);
   const [isFlipping, setIsFlipping] = useState(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const previewButtonRef = useRef<HTMLButtonElement>(null);
@@ -93,6 +95,8 @@ export function PhotoPreviewProvider({
   const flipPendingRef = useRef<"open" | "close" | null>(null);
   const flipTweenRef = useRef<gsap.core.Animation | null>(null);
   const chromeTimelineRef = useRef<gsap.core.Timeline | null>(null);
+  const captionSwapTimelineRef = useRef<gsap.core.Timeline | null>(null);
+  const captionItemIdRef = useRef<string | null>(null);
   const closeFinishRef = useRef<(() => void) | null>(null);
   const isAnimatingRef = useRef(false);
   const imagePreloaderRef = useRef(createPreviewImagePreloader());
@@ -103,6 +107,11 @@ export function PhotoPreviewProvider({
   const displayIndex =
     incomingReady && incomingIndex !== null ? incomingIndex : activeIndex;
   const displayItem = previewItems[displayIndex] ?? activeItem;
+  const [captionItem, setCaptionItem] = useState<{
+    id: string;
+    title: string;
+    description: string | null | undefined;
+  } | null>(null);
 
   const markImageLoaded = useCallback((url: string) => {
     imagePreloaderRef.current.markLoaded(url);
@@ -125,6 +134,7 @@ export function PhotoPreviewProvider({
       const { captionLines, controls, closeBtn } = getChromeTargets();
 
       chromeTimelineRef.current?.kill();
+      captionSwapTimelineRef.current?.kill();
       gsap.killTweensOf([...captionLines, controls, closeBtn].filter(Boolean));
 
       if (captionRef.current) {
@@ -153,11 +163,76 @@ export function PhotoPreviewProvider({
     [getChromeTargets],
   );
 
+  const animateCaptionSwap = useCallback(
+    (next: { id: string; title: string; description: string | null | undefined }) => {
+      const { captionLines } = getChromeTargets();
+
+      captionSwapTimelineRef.current?.kill();
+      gsap.killTweensOf(captionLines);
+
+      if (captionLines.length === 0 || prefersReducedMotion()) {
+        setCaptionItem(next);
+        captionItemIdRef.current = next.id;
+        gsap.set(captionLines, {
+          opacity: 1,
+          y: 0,
+          filter: "blur(0px)",
+        });
+        return;
+      }
+
+      const direction = revealDirectionRef.current;
+      const exitY = direction === "down" ? -8 : 8;
+      const enterY = direction === "down" ? 10 : -10;
+
+      const timeline = gsap.timeline({
+        onComplete: () => {
+          captionSwapTimelineRef.current = null;
+        },
+      });
+
+      timeline.to(captionLines, {
+        y: exitY,
+        opacity: 0,
+        filter: "blur(2px)",
+        duration: 0.12,
+        stagger: 0.03,
+        ease: "power2.in",
+        overwrite: "auto",
+      });
+
+      timeline.add(() => {
+        flushSync(() => {
+          setCaptionItem(next);
+          captionItemIdRef.current = next.id;
+        });
+        gsap.set(captionLines, {
+          y: enterY,
+          opacity: 0,
+          filter: "blur(2px)",
+        });
+      });
+
+      timeline.to(captionLines, {
+        y: 0,
+        opacity: 1,
+        filter: "blur(0px)",
+        duration: 0.22,
+        stagger: 0.04,
+        ease: "power3.out",
+      });
+
+      captionSwapTimelineRef.current = timeline;
+    },
+    [getChromeTargets],
+  );
+
   const animateChromeEnter = useCallback(
     (immediate = false) => {
       const { captionLines, controls, closeBtn } = getChromeTargets();
 
       chromeTimelineRef.current?.kill();
+      captionSwapTimelineRef.current?.kill();
 
       if (captionRef.current) {
         captionRef.current.style.visibility = "visible";
@@ -228,6 +303,7 @@ export function PhotoPreviewProvider({
       const { captionLines, controls, closeBtn } = getChromeTargets();
 
       chromeTimelineRef.current?.kill();
+      captionSwapTimelineRef.current?.kill();
 
       if (prefersReducedMotion()) {
         hideChrome(true);
@@ -269,6 +345,39 @@ export function PhotoPreviewProvider({
   useLayoutEffect(() => {
     hideChrome(true);
   }, [hideChrome]);
+
+  useLayoutEffect(() => {
+    if (!displayItem) {
+      return;
+    }
+
+    const next = {
+      id: displayItem.id,
+      title: displayItem.title,
+      description: displayItem.description,
+    };
+    const captionVisible =
+      isOpen &&
+      captionRef.current != null &&
+      getComputedStyle(captionRef.current).visibility !== "hidden";
+
+    if (!captionVisible || captionItemIdRef.current === null) {
+      captionItemIdRef.current = next.id;
+      setCaptionItem(next);
+      gsap.set(getChromeTargets().captionLines, {
+        opacity: 1,
+        y: 0,
+        filter: "blur(0px)",
+      });
+      return;
+    }
+
+    if (captionItemIdRef.current === next.id) {
+      return;
+    }
+
+    animateCaptionSwap(next);
+  }, [animateCaptionSwap, displayItem, getChromeTargets, isOpen]);
 
   useLayoutEffect(() => {
     if (flipPendingRef.current === null || !flipStateRef.current) {
@@ -612,8 +721,6 @@ export function PhotoPreviewProvider({
       );
       let closestMenuItemId: string | null = null;
       let closestMenuItemDistance = Number.POSITIVE_INFINITY;
-      let closestIndex = 0;
-      let closestDistance = Number.POSITIVE_INFINITY;
 
       menuElements.forEach((element) => {
         const rect = element.getBoundingClientRect();
@@ -625,26 +732,17 @@ export function PhotoPreviewProvider({
         }
       });
 
-      previewItems.forEach((item, index) => {
-        const element = document.querySelector<HTMLElement>(
-          `[data-menu-item-id="${item.id}"]`,
-        );
-
-        if (!element) {
-          return;
-        }
-
-        const rect = element.getBoundingClientRect();
-        const distance = Math.abs(rect.top + rect.height / 2 - viewportMarker);
-
-        if (distance < closestDistance) {
-          closestDistance = distance;
-          closestIndex = index;
-        }
-      });
-
       setActiveMenuItemId(closestMenuItemId);
-      showItem(closestIndex, revealDirectionRef.current);
+      const closestPreviewIndex = previewItems.findIndex(
+        (item) => item.id === closestMenuItemId,
+      );
+      setIsActiveItemWithoutPhoto(
+        closestMenuItemId !== null && closestPreviewIndex === -1,
+      );
+
+      if (closestPreviewIndex !== -1) {
+        showItem(closestPreviewIndex, revealDirectionRef.current);
+      }
     };
 
     lastScrollYRef.current = window.scrollY;
@@ -753,7 +851,7 @@ export function PhotoPreviewProvider({
       {children}
       {activeItem && displayItem ? (
         <div
-          className={`image-viewer${isOpen ? " is-open" : ""}${isDismissed ? " is-dismissed" : ""}${isFlipping ? " is-flipping" : ""}`}
+          className={`image-viewer${isOpen ? " is-open" : ""}${isDismissed || isActiveItemWithoutPhoto ? " is-dismissed" : ""}${isFlipping ? " is-flipping" : ""}`}
           role={isOpen ? "dialog" : undefined}
           aria-modal={isOpen ? "true" : undefined}
           aria-labelledby={isOpen ? "viewer-title" : undefined}
@@ -827,10 +925,10 @@ export function PhotoPreviewProvider({
             </button>
             <div ref={captionRef} className="viewer-caption">
               <h3 id="viewer-title" className="viewer-caption-line">
-                <span>{displayItem.title}</span>
+                <span>{(captionItem ?? displayItem).title}</span>
               </h3>
               <p className="viewer-caption-line viewer-caption-description">
-                <span>{displayItem.description ?? "\u00a0"}</span>
+                <span>{(captionItem ?? displayItem).description ?? "\u00a0"}</span>
               </p>
             </div>
           </div>

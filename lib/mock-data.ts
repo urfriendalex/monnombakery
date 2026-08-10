@@ -1,5 +1,6 @@
 import type { MenuPageData } from "@/types/menu";
 import englishTranslations from "@/content/english-translations.json";
+import { applyBasicDrinksMenu } from "@/lib/basic-drinks-menu";
 
 export const mockMenuData: MenuPageData = {
   settings: {
@@ -288,3 +289,5 @@ Object.assign(mockMenuData.settings, translations["restaurant-settings"]);
 mockMenuData.groups.forEach((document) => Object.assign(document, translations[document._id]));
 mockMenuData.categories.forEach((document) => Object.assign(document, translations[document._id]));
 mockMenuData.items.forEach((document) => Object.assign(document, translations[document._id]));
+
+applyBasicDrinksMenu(mockMenuData);
