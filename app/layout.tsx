@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { Archivo_Black, IBM_Plex_Mono } from "next/font/google";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { absoluteUrl, siteDescription, siteName, siteUrl } from "@/lib/seo";
@@ -47,14 +48,16 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = (await headers()).get("x-site-locale") === "en" ? "en" : "pl";
+
   return (
     <html
-      lang="pl"
+      lang={locale}
       className={`${plexMono.variable} ${archivoBlack.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">

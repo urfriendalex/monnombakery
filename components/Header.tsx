@@ -1,8 +1,10 @@
 import Image from "next/image";
 
 import type { RestaurantSettings } from "@/types/menu";
+import { ui, type Locale } from "@/lib/i18n";
 
-export function Header({ settings }: { settings: RestaurantSettings }) {
+export function Header({ settings, locale }: { settings: RestaurantSettings; locale: Locale }) {
+  const copy = ui[locale];
   const brunchHoursWeekdays =
     settings.brunchHoursWeekdays ?? "10:00 - 15:00";
   const brunchHoursWeekend = settings.brunchHoursWeekend ?? "9:00 - 15:00";
@@ -10,7 +12,7 @@ export function Header({ settings }: { settings: RestaurantSettings }) {
   return (
     <header className="menu-header">
       <div className="header-brand">
-        <p className="header-kicker">sezonowe</p>
+        <p className="header-kicker">{copy.seasonal}</p>
         <Image
           className="logo-wordmark"
           src="/menu/text/menu-right.svg"
@@ -21,14 +23,14 @@ export function Header({ settings }: { settings: RestaurantSettings }) {
         />
       </div>
       <div className="header-meta">
-        <p className="header-label">branchy</p>
-        <div className="hours" aria-label="Godziny otwarcia">
+        <p className="header-label">{copy.brunches}</p>
+        <div className="hours" aria-label={copy.openingHours}>
           <div className="hours-row">
-            <span>w dni robocze</span>
+            <span>{copy.weekdays}</span>
             <time>{brunchHoursWeekdays}</time>
           </div>
           <div className="hours-row">
-            <span>w weekendy</span>
+            <span>{copy.weekend}</span>
             <time>{brunchHoursWeekend}</time>
           </div>
         </div>

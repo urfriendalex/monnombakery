@@ -26,6 +26,7 @@ export type RestaurantSettings = {
   decorativeLogo?: SanityImage;
   decorativeLogoText?: string;
   description?: string;
+  descriptionEn?: string;
   address?: string;
   mapUrl?: string;
   phone?: string;
@@ -33,17 +34,25 @@ export type RestaurantSettings = {
   instagramUrl?: string;
   reservationUrl?: string;
   openingHoursWeekdays?: string;
+  openingHoursWeekdaysEn?: string;
   openingHoursWeekend?: string;
+  openingHoursWeekendEn?: string;
   brunchHoursWeekdays?: string;
+  brunchHoursWeekdaysEn?: string;
   brunchHoursWeekend?: string;
+  brunchHoursWeekendEn?: string;
   footerNote?: string;
+  footerNoteEn?: string;
   seoTitle?: string;
+  seoTitleEn?: string;
   seoDescription?: string;
+  seoDescriptionEn?: string;
 };
 
 export type MenuGroup = {
   _id: string;
   title: string;
+  titleEn?: string;
   slug: string;
   order: number;
   isVisible: boolean;
@@ -52,9 +61,11 @@ export type MenuGroup = {
 export type MenuCategory = {
   _id: string;
   title: string;
+  titleEn?: string;
   slug: string;
   group: SanityRef;
   description?: string;
+  descriptionEn?: string;
   order: number;
   isVisible: boolean;
 };
@@ -62,19 +73,27 @@ export type MenuCategory = {
 export type MenuItem = {
   _id: string;
   name: string;
+  nameEn?: string;
   slug: string;
   category: SanityRef;
   description?: string;
+  descriptionEn?: string;
   price: string;
   secondaryPrice?: string;
   dietaryLabels?: string[];
+  dietaryLabelsEn?: string[];
   badgeLabel?: string;
+  badgeLabelEn?: string;
   servingNote?: string;
+  servingNoteEn?: string;
   image?: SanityImage;
   imageAlt?: string;
+  imageAltEn?: string;
   gallery?: SanityImage[];
   tags?: string[];
+  tagsEn?: string[];
   allergens?: string[];
+  allergensEn?: string[];
   isVisible: boolean;
   isAvailable: boolean;
   isFeatured: boolean;

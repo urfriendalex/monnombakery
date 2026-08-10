@@ -1,0 +1,74 @@
+{
+  "restaurant-settings": {
+    "descriptionEn": "Bakery, brunch, coffee.",
+    "openingHoursWeekdaysEn": "8:30 - 18:00",
+    "openingHoursWeekendEn": "9:00 - 18:00",
+    "brunchHoursWeekdaysEn": "10:00 - 15:00",
+    "brunchHoursWeekendEn": "9:00 - 15:00",
+    "footerNoteEn": "Please place your order at the counter",
+    "seoTitleEn": "Mon Nom Bakery Menu",
+    "seoDescriptionEn": "Seasonal brunch, coffee, matcha and fresh bakes at Mon Nom Bakery in Warsaw."
+  },
+  "group-breakfast": { "titleEn": "Menu" },
+  "cat-breakfast": { "titleEn": "Breakfast" },
+  "cat-porridge": { "titleEn": "Savoury porridge" },
+  "cat-sandwiches": { "titleEn": "Sandwiches" },
+  "cat-plates": { "titleEn": "Plates" },
+  "cat-sweet": { "titleEn": "Sweet" },
+  "cat-coffee": { "titleEn": "Coffee" },
+  "cat-matcha": { "titleEn": "Matcha" },
+  "item-mortadela": {
+    "nameEn": "Mortadella Breakfast",
+    "descriptionEn": "bread, scrambled eggs, cheese, mortadella, jam, butter, salad",
+    "imageAltEn": "Mortadella breakfast with scrambled eggs and bread"
+  },
+  "item-losos": {
+    "nameEn": "Salmon Breakfast",
+    "descriptionEn": "bread, scrambled eggs, avocado, salmon, jam, butter, salad",
+    "imageAltEn": "Breakfast with salmon and avocado",
+    "tagsEn": ["new"]
+  },
+  "item-owsianka-mortadela": {
+    "nameEn": "Mortadella & Egg Savoury Porridge",
+    "descriptionEn": "oatmeal with soy sauce and peanut butter, mortadella, egg",
+    "imageAltEn": "Savoury porridge with mortadella and egg"
+  },
+  "item-owsianka-losos": {
+    "nameEn": "Avocado & Salmon Savoury Porridge",
+    "descriptionEn": "oatmeal with soy sauce and peanut butter, avocado, salmon",
+    "imageAltEn": "Savoury porridge with avocado and salmon"
+  },
+  "item-roastbeef": {
+    "nameEn": "Roast Beef Sandwich",
+    "descriptionEn": "wheat and rye bread, miso mayonnaise, lettuce, roast beef, onion",
+    "imageAltEn": "Roast beef sandwich with lettuce and onion"
+  },
+  "item-indyk": {
+    "nameEn": "Turkey Sandwich",
+    "descriptionEn": "ciabatta, scrambled eggs, turkey, lettuce",
+    "imageAltEn": "Turkey sandwich with scrambled eggs and lettuce"
+  },
+  "item-talerz": {
+    "nameEn": "Egg & Cheese Plate",
+    "imageAltEn": "Plate with egg and cheese"
+  },
+  "item-syrniki-chalwa": {
+    "nameEn": "Syrniki with Halva",
+    "descriptionEn": "sweet curd cheese, halva, raspberry, condensed milk, sour cream",
+    "imageAltEn": "Syrniki with halva on a plate"
+  },
+  "item-syrniki-ogorek": {
+    "nameEn": "Syrniki with Cucumber Salsa",
+    "descriptionEn": "salted curd cheese, cucumber salsa, coriander, sour cream",
+    "imageAltEn": "Syrniki with cucumber salsa"
+  },
+  "item-espresso-tonic": { "nameEn": "Espresso Tonic", "imageAltEn": "Espresso tonic over ice" },
+  "item-citrus-coffee": { "nameEn": "Citrus Coffee", "imageAltEn": "Citrus coffee over ice" },
+  "item-filter-tonic": { "nameEn": "Filter Tonic", "imageAltEn": "Filter tonic with citrus" },
+  "item-ice-filter": { "nameEn": "Iced Filter", "imageAltEn": "Filter coffee over ice" },
+  "item-ice-latte-sesame": { "nameEn": "Iced Sesame Latte", "imageAltEn": "Iced sesame latte" },
+  "item-tropical-matcha": { "nameEn": "Tropical Matcha", "imageAltEn": "Tropical matcha over ice" },
+  "item-ice-matcha-latte": { "nameEn": "Iced Matcha Latte", "imageAltEn": "Iced matcha latte" },
+  "item-matcha-tonic": { "nameEn": "Matcha Tonic", "imageAltEn": "Matcha tonic over ice" },
+  "item-ice-matcha-sesame": { "nameEn": "Iced Sesame Matcha", "imageAltEn": "Iced sesame matcha" }
+}

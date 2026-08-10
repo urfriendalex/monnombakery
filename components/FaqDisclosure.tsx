@@ -2,18 +2,22 @@
 
 import Link from "next/link";
 import { useId, useState } from "react";
+import { localizedPath, ui, type Locale } from "@/lib/i18n";
 
 type FaqDisclosureProps = {
   address?: string;
   mapUrl?: string;
   instagramUrl?: string;
+  locale: Locale;
 };
 
 export function FaqDisclosure({
   address,
   mapUrl,
   instagramUrl,
+  locale,
 }: FaqDisclosureProps) {
+  const copy = ui[locale];
   const [isOpen, setIsOpen] = useState(false);
   const panelId = useId();
 
@@ -28,7 +32,7 @@ export function FaqDisclosure({
           aria-controls={panelId}
           onClick={() => setIsOpen((current) => !current)}
         >
-          <span>{isOpen ? "Zwin" : "Rozwin"}</span>
+          <span>{isOpen ? copy.faqCollapse : copy.faqExpand}</span>
           <span aria-hidden="true">{isOpen ? "-" : "+"}</span>
         </button>
       </div>
@@ -41,23 +45,23 @@ export function FaqDisclosure({
       >
         <div className="landing-faq-list">
           <article>
-            <h2>Gdzie sprawdzic aktualne menu Mon Nom Bakery?</h2>
+            <h2>{copy.faqMenuQuestion}</h2>
             <p>
-              Aktualne dania, ceny i kategorie znajdziesz na stronie{" "}
-              <Link href="/menu">menu</Link>.
+              {copy.faqMenuAnswer}{" "}
+              <Link href={localizedPath(locale, "/menu")}>menu</Link>.
             </p>
           </article>
           <article>
-            <h2>Gdzie jest Mon Nom Bakery?</h2>
+            <h2>{copy.faqLocationQuestion}</h2>
             <p>
               {address
-                ? `Mon Nom Bakery znajduje sie pod adresem ${address}.`
-                : "Adres lokalu jest podany w sekcji informacyjnej na stronie."}
+                ? `${copy.faqLocationPrefix} ${address}.`
+                : copy.faqLocationFallback}
               {mapUrl ? (
                 <>
                   {" "}
                   <a href={mapUrl} target="_blank" rel="noreferrer">
-                    Zobacz trase w Google Maps
+                    {copy.faqDirections}
                   </a>
                   .
                 </>
@@ -65,13 +69,13 @@ export function FaqDisclosure({
             </p>
           </article>
           <article>
-            <h2>Gdzie pojawiaja sie nowosci Mon Nom Bakery?</h2>
+            <h2>{copy.faqNewsQuestion}</h2>
             <p>
-              Nowe pozycje i aktualnosci pojawiaja sie na stronie menu
+              {copy.faqNewsAnswer}
               {instagramUrl ? (
                 <>
                   {" "}
-                  oraz na{" "}
+                  {copy.faqNewsInstagram}{" "}
                   <a href={instagramUrl} target="_blank" rel="noreferrer">
                     Instagramie
                   </a>

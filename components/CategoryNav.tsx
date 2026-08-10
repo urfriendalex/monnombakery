@@ -2,8 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { MenuCategory } from "@/types/menu";
+import { ui, type Locale } from "@/lib/i18n";
 
-export function CategoryNav({ categories }: { categories: MenuCategory[] }) {
+export function CategoryNav({ categories, locale }: { categories: MenuCategory[]; locale: Locale }) {
   const [activeSlug, setActiveSlug] = useState(categories[0]?.slug);
   const navRef = useRef<HTMLElement>(null);
   const buttonRefs = useRef(new Map<string, HTMLButtonElement>());
@@ -87,7 +88,7 @@ export function CategoryNav({ categories }: { categories: MenuCategory[] }) {
   }, [categories]);
 
   return (
-    <nav ref={navRef} className="category-nav" aria-label="Kategorie menu">
+    <nav ref={navRef} className="category-nav" aria-label={ui[locale].menuCategories}>
       {categories.map((category) => (
         <button
           key={category._id}

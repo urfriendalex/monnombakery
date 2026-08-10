@@ -264,6 +264,36 @@ img {
   padding: var(--space-lg) var(--page-padding) var(--space-xl);
 }
 
+.language-switch {
+  display: flex;
+  align-items: center;
+  gap: 0.45em;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.language-switch span[aria-current="page"] {
+  color: var(--muted);
+}
+
+.language-switch a {
+  text-underline-offset: 0.28em;
+}
+
+.language-switch a:hover,
+.language-switch a:focus-visible {
+  text-decoration-thickness: 2px;
+}
+
+.language-switch-home {
+  justify-content: flex-end;
+  margin: calc(var(--space-sm) * -1) 0 var(--space-md);
+  animation: receipt-fade 240ms var(--ease-out) both;
+}
+
 .landing-intro,
 .landing-actions,
 .landing-info {
@@ -1123,6 +1153,17 @@ img {
   font-size: 0.68rem;
   letter-spacing: 0;
   line-height: 1.52;
+}
+
+.language-switch-footer {
+  position: relative;
+  z-index: 2;
+  margin-top: 54px;
+  color: #fff;
+}
+
+.language-switch-footer span[aria-current="page"] {
+  color: #8d8d8d;
 }
 
 .footer-grid h2 {

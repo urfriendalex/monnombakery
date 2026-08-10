@@ -1,7 +1,9 @@
 import { imageUrlFor } from "@/lib/sanity/image";
 import type { MenuItem as MenuItemType } from "@/types/menu";
+import { ui, type Locale } from "@/lib/i18n";
 
-export function MenuItem({ item }: { item: MenuItemType }) {
+export function MenuItem({ item, locale }: { item: MenuItemType; locale: Locale }) {
+  const copy = ui[locale];
   const imageUrl = imageUrlFor(item.image, 1200);
 
   return (
@@ -22,9 +24,9 @@ export function MenuItem({ item }: { item: MenuItemType }) {
                 className="photo-trigger"
                 type="button"
                 data-photo-preview-id={item._id}
-                aria-label={`Zobacz zdjęcie: ${item.name}`}
+                aria-label={`${copy.viewPhoto}: ${item.name}`}
               >
-                zdjęcie
+                {copy.photo}
               </button>
             ) : null}
             {item.tags?.map((tag) => (
@@ -35,7 +37,7 @@ export function MenuItem({ item }: { item: MenuItemType }) {
           </div>
         ) : null}
       </div>
-      <div className="price-block" aria-label={`Cena ${item.price}`}>
+      <div className="price-block" aria-label={`${copy.price} ${item.price}`}>
         <span className="price">{item.price}</span>
         {item.secondaryPrice ? (
           <span className="secondary-price">{item.secondaryPrice}</span>
