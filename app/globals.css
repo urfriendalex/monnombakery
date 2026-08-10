@@ -680,7 +680,7 @@ img {
 .menu-group + .menu-group {
   position: relative;
   margin-top: var(--space-lg);
-  padding-top: var(--space-xl);
+  padding-top: calc(var(--space-xl) + var(--space-sm));
 }
 
 .menu-group + .menu-group::before {
