@@ -20,6 +20,13 @@ export function CategoryNav({
       ),
     [categories, groups],
   );
+  const revealIndexById = useMemo(
+    () =>
+      new Map(
+        orderedCategories.map((category, index) => [category._id, index]),
+      ),
+    [orderedCategories],
+  );
   const [activeSlug, setActiveSlug] = useState(orderedCategories[0]?.slug);
   const [indicator, setIndicator] = useState({
     animate: false,
@@ -34,6 +41,21 @@ export function CategoryNav({
   const pendingSlugRef = useRef<string | undefined>(undefined);
   const pendingTimeoutRef = useRef<number | undefined>(undefined);
   const animateIndicatorRef = useRef(false);
+
+  const scrollToCategory = (slug: string) => {
+    const section = document.getElementById(slug);
+    if (!section) return;
+
+    const navigationHeight =
+      wrapperRef.current?.getBoundingClientRect().height ?? 45;
+    const targetTop =
+      window.scrollY + section.getBoundingClientRect().top - navigationHeight;
+
+    window.scrollTo({
+      top: Math.max(0, targetTop),
+      behavior: "smooth",
+    });
+  };
 
   useLayoutEffect(() => {
     const nav = categoryNavRef.current;
@@ -187,6 +209,9 @@ export function CategoryNav({
                     }
                   }}
                   className="category-link"
+                  style={{
+                    animationDelay: `${70 + (revealIndexById.get(category._id) ?? 0) * 32}ms`,
+                  }}
                   type="button"
                   aria-current={activeSlug === category.slug}
                   onClick={(event) => {
@@ -200,10 +225,7 @@ export function CategoryNav({
                       window.dispatchEvent(new Event("scroll"));
                     }, 900);
                     setActiveSlug(category.slug);
-                    document.getElementById(category.slug)?.scrollIntoView({
-                      block: "start",
-                      behavior: "smooth",
-                    });
+                    scrollToCategory(category.slug);
                   }}
                 >
                   {category.title}

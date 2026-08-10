@@ -50,6 +50,7 @@ img {
   *,
   *::before,
   *::after {
+    animation-delay: 0ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
@@ -171,8 +172,31 @@ img {
   top: 0;
   z-index: 10;
   background: color-mix(in srgb, var(--background) 94%, transparent);
-  border-block: var(--thin-line) solid var(--edge-line);
   backdrop-filter: blur(10px);
+}
+
+.menu-navigation::before,
+.menu-navigation::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  left: 0;
+  z-index: 1;
+  height: var(--thin-line);
+  background: var(--edge-line);
+  pointer-events: none;
+  transform-origin: left center;
+  animation: category-rail-reveal 360ms var(--ease-out) both;
+}
+
+.menu-navigation::before {
+  top: 0;
+  animation-delay: 35ms;
+}
+
+.menu-navigation::after {
+  bottom: 0;
+  animation-delay: 105ms;
 }
 
 .category-nav {
@@ -183,6 +207,7 @@ img {
   align-items: center;
   padding: 7px var(--page-padding) 6px;
   scrollbar-width: none;
+  animation: receipt-fade 220ms var(--ease-out) 70ms both;
 }
 
 .category-nav-group {
@@ -239,6 +264,8 @@ img {
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+  animation: receipt-reveal 280ms var(--ease-out) both;
+  clip-path: inset(0 0 0 0);
   transition:
     color 160ms var(--ease-out),
     transform 160ms var(--ease-out);
@@ -265,10 +292,6 @@ img {
 .menu-stack {
   animation: receipt-reveal 320ms var(--ease-out) both;
   clip-path: inset(0 0 0 0);
-}
-
-.menu-navigation {
-  animation: receipt-fade 220ms var(--ease-out) 70ms both;
 }
 
 .menu-stack {
@@ -343,6 +366,16 @@ img {
 
   to {
     opacity: 1;
+  }
+}
+
+@keyframes category-rail-reveal {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
   }
 }
 
