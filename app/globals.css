@@ -929,9 +929,12 @@ img {
   pointer-events: auto;
 }
 
+.image-viewer:not(.is-open):not(.is-flipping) .viewer-stage {
+  transition: transform 560ms var(--ease-out);
+}
+
 .image-viewer.is-dismissed:not(.is-open):not(.is-flipping) .viewer-stage {
   transform: translateX(calc(-100% - 24px));
-  transition: transform 560ms var(--ease-out);
 }
 
 .viewer-image-button {

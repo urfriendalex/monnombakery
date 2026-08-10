@@ -77,6 +77,7 @@ export function PhotoPreviewProvider({
   const [activeMenuItemId, setActiveMenuItemId] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
+  const [isActiveItemWithoutPhoto, setIsActiveItemWithoutPhoto] = useState(false);
   const [isFlipping, setIsFlipping] = useState(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const previewButtonRef = useRef<HTMLButtonElement>(null);
@@ -720,8 +721,6 @@ export function PhotoPreviewProvider({
       );
       let closestMenuItemId: string | null = null;
       let closestMenuItemDistance = Number.POSITIVE_INFINITY;
-      let closestIndex = 0;
-      let closestDistance = Number.POSITIVE_INFINITY;
 
       menuElements.forEach((element) => {
         const rect = element.getBoundingClientRect();
@@ -733,26 +732,17 @@ export function PhotoPreviewProvider({
         }
       });
 
-      previewItems.forEach((item, index) => {
-        const element = document.querySelector<HTMLElement>(
-          `[data-menu-item-id="${item.id}"]`,
-        );
-
-        if (!element) {
-          return;
-        }
-
-        const rect = element.getBoundingClientRect();
-        const distance = Math.abs(rect.top + rect.height / 2 - viewportMarker);
-
-        if (distance < closestDistance) {
-          closestDistance = distance;
-          closestIndex = index;
-        }
-      });
-
       setActiveMenuItemId(closestMenuItemId);
-      showItem(closestIndex, revealDirectionRef.current);
+      const closestPreviewIndex = previewItems.findIndex(
+        (item) => item.id === closestMenuItemId,
+      );
+      setIsActiveItemWithoutPhoto(
+        closestMenuItemId !== null && closestPreviewIndex === -1,
+      );
+
+      if (closestPreviewIndex !== -1) {
+        showItem(closestPreviewIndex, revealDirectionRef.current);
+      }
     };
 
     lastScrollYRef.current = window.scrollY;
@@ -861,7 +851,7 @@ export function PhotoPreviewProvider({
       {children}
       {activeItem && displayItem ? (
         <div
-          className={`image-viewer${isOpen ? " is-open" : ""}${isDismissed ? " is-dismissed" : ""}${isFlipping ? " is-flipping" : ""}`}
+          className={`image-viewer${isOpen ? " is-open" : ""}${isDismissed || isActiveItemWithoutPhoto ? " is-dismissed" : ""}${isFlipping ? " is-flipping" : ""}`}
           role={isOpen ? "dialog" : undefined}
           aria-modal={isOpen ? "true" : undefined}
           aria-labelledby={isOpen ? "viewer-title" : undefined}
