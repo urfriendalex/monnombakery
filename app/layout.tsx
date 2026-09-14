@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { Archivo_Black, IBM_Plex_Mono } from "next/font/google";
+import { AnalyticsBody, AnalyticsHead } from "@/components/Analytics";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { absoluteUrl, siteDescription, siteName, siteUrl } from "@/lib/seo";
 import "lenis/dist/lenis.css";
@@ -53,14 +54,20 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const locale = (await headers()).get("x-site-locale") === "en" ? "en" : "pl";
+  const requestHeaders = await headers();
+  const locale = requestHeaders.get("x-site-locale") === "en" ? "en" : "pl";
+  // proxy.ts only runs (and sets this header) for public pages, not /studio.
+  const analyticsEnabled =
+    process.env.NODE_ENV === "production" && requestHeaders.has("x-site-locale");
 
   return (
     <html
       lang={locale}
       className={`${plexMono.variable} ${archivoBlack.variable} h-full antialiased`}
     >
+      <AnalyticsHead enabled={analyticsEnabled} />
       <body className="min-h-full flex flex-col">
+        <AnalyticsBody enabled={analyticsEnabled} />
         <SmoothScroll>{children}</SmoothScroll>
       </body>
     </html>

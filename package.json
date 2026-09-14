@@ -14,6 +14,7 @@
     "sanity:drinks": "node --env-file=.env.local scripts/populate-basic-drinks-menu.mjs"
   },
   "dependencies": {
+    "@next/third-parties": "^16.2.6",
     "@sanity/client": "^7.22.0",
     "@sanity/image-url": "^2.1.1",
     "@sanity/ui": "^3.2.0",
