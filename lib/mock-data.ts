@@ -114,7 +114,6 @@ export const mockMenuData: MenuPageData = {
       price: "39",
       image: { asset: { url: "/menu/photos/sniadanie-losos.jpeg" } },
       imageAlt: "Śniadanie z łososiem i awokado",
-      tags: ["nowe"],
       isVisible: true,
       isAvailable: true,
       isFeatured: true,
@@ -235,6 +234,7 @@ export const mockMenuData: MenuPageData = {
       _id: "item-citrus-coffee", name: "Citrus Coffee", slug: "citrus-coffee",
       category: { _type: "reference", _ref: "cat-coffee" }, price: "27",
       image: { asset: { url: "/menu/photos/citrus-coffe.jpeg" } }, imageAlt: "Citrus coffee z lodem",
+      isNew: true,
       isVisible: true, isAvailable: true, isFeatured: false, order: 2,
     },
     {
@@ -247,6 +247,7 @@ export const mockMenuData: MenuPageData = {
       _id: "item-ice-filter", name: "Ice Filter", slug: "ice-filter",
       category: { _type: "reference", _ref: "cat-coffee" }, price: "19",
       image: { asset: { url: "/menu/photos/ice-filter.jpeg" } }, imageAlt: "Kawa filtrowana na lodzie",
+      isNew: true,
       isVisible: true, isAvailable: true, isFeatured: false, order: 4,
     },
     {
@@ -259,6 +260,7 @@ export const mockMenuData: MenuPageData = {
       _id: "item-tropical-matcha", name: "Tropical Matcha", slug: "tropical-matcha",
       category: { _type: "reference", _ref: "cat-matcha" }, price: "28",
       image: { asset: { url: "/menu/photos/tropical-matcha.jpeg" } }, imageAlt: "Tropikalna matcha z lodem",
+      isNew: true,
       isVisible: true, isAvailable: true, isFeatured: false, order: 1,
     },
     {
@@ -277,6 +279,7 @@ export const mockMenuData: MenuPageData = {
       _id: "item-ice-matcha-sesame", name: "Ice Matcha Sesame", slug: "ice-matcha-sesame",
       category: { _type: "reference", _ref: "cat-matcha" }, price: "28",
       image: { asset: { url: "/menu/photos/ice-matcha-sesame.jpeg" } }, imageAlt: "Mrożona matcha sezamowa",
+      isNew: true,
       isVisible: true, isAvailable: true, isFeatured: false, order: 4,
     },
   ],

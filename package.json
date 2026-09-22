@@ -9,6 +9,7 @@
     "lint": "eslint",
     "studio": "sanity dev --port 3333",
     "studio:deploy": "sanity deploy",
+    "sanity:new-menu": "node --env-file=.env.local scripts/migrate-new-menu-items.mjs",
     "sanity:seed": "node --env-file=.env.local scripts/seed-sanity.mjs",
     "sanity:translate": "node --env-file=.env.local scripts/populate-english-translations.mjs",
     "sanity:drinks": "node --env-file=.env.local scripts/populate-basic-drinks-menu.mjs"

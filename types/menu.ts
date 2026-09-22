@@ -84,6 +84,7 @@ export type MenuItem = {
   dietaryLabelsEn?: string[];
   badgeLabel?: string;
   badgeLabelEn?: string;
+  isNew?: boolean;
   servingNote?: string;
   servingNoteEn?: string;
   image?: SanityImage;

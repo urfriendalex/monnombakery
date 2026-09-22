@@ -88,6 +88,7 @@ export const visibleMenuItemsQuery = `*[
   dietaryLabelsEn,
   badgeLabel,
   badgeLabelEn,
+  isNew,
   servingNote,
   servingNoteEn,
   image{
