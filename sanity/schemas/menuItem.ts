@@ -66,9 +66,17 @@ export const menuItem = defineType({
       title: "Badge label (Polish)",
       type: "string",
       group: "content",
-      description: "Optional short label like new, bestseller, seasonal.",
+      description: "Optional short label for non-status labels like bestseller or seasonal.",
     }),
     defineField({ name: "badgeLabelEn", title: "Badge label (English)", type: "string", group: "english" }),
+    defineField({
+      name: "isNew",
+      title: "New item",
+      type: "boolean",
+      group: "content",
+      initialValue: false,
+      description: "Shows a localized new/nowe label next to the price.",
+    }),
     defineField({
       name: "servingNote",
       title: "Serving note (Polish)",

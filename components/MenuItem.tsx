@@ -9,6 +9,7 @@ export function MenuItem({ item, locale }: { item: MenuItemType; locale: Locale 
   return (
     <article
       className="menu-item"
+      id={item._id}
       data-menu-item-id={item._id}
       {...(imageUrl ? { "data-photo-preview-id": item._id } : {})}
     >
@@ -42,8 +43,9 @@ export function MenuItem({ item, locale }: { item: MenuItemType; locale: Locale 
       </div>
       <div
         className="price-block"
-        aria-label={`${copy.price} ${item.price}${item.secondaryPrice ? ` / ${item.secondaryPrice}` : ""}`}
+        aria-label={`${item.isNew ? `${copy.newItemLabel}, ` : ""}${copy.price} ${item.price}${item.secondaryPrice ? ` / ${item.secondaryPrice}` : ""}`}
       >
+        {item.isNew ? <span className="new-badge">{copy.newItemLabel}</span> : null}
         <span className="price">{item.price}</span>
         {item.secondaryPrice ? <span className="price-separator" aria-hidden="true" /> : null}
         {item.secondaryPrice ? <span className="secondary-price">{item.secondaryPrice}</span> : null}

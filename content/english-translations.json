@@ -25,8 +25,7 @@
   "item-losos": {
     "nameEn": "Salmon Breakfast",
     "descriptionEn": "bread, scrambled eggs, avocado, salmon, jam, butter, salad",
-    "imageAltEn": "Breakfast with salmon and avocado",
-    "tagsEn": ["new"]
+    "imageAltEn": "Breakfast with salmon and avocado"
   },
   "item-owsianka-mortadela": {
     "nameEn": "Mortadella & Egg Savoury Porridge",

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { FaqDisclosure } from "@/components/FaqDisclosure";
@@ -5,14 +6,20 @@ import { Footer } from "@/components/Footer";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { SiteShell } from "@/components/SiteShell";
 import { localizedPath, ui, type Locale } from "@/lib/i18n";
+import { getMenuItemsInPageOrder } from "@/lib/menu-order";
 import { absoluteUrl, siteName, siteUpdatedAt } from "@/lib/seo";
 import { getMenuPageData } from "@/lib/sanity/queries";
 
 export async function HomeExperience({ locale }: { locale: Locale }) {
   const copy = ui[locale];
-  const { settings } = await getMenuPageData(locale);
+  const { settings, groups, categories, items } = await getMenuPageData(locale);
   const homePath = localizedPath(locale, "/");
   const menuPath = localizedPath(locale, "/menu");
+  const firstNewItem = getMenuItemsInPageOrder(groups, categories, items).find(
+    (item) => item.isNew,
+  );
+  const actionNumber = (index: number) =>
+    `/${String(index + (firstNewItem ? 1 : 0)).padStart(2, "0")}`;
   const description = settings.seoDescription ?? copy.homeDescription;
   const organizationJsonLd = {
     "@context": "https://schema.org",
@@ -79,21 +86,38 @@ export async function HomeExperience({ locale }: { locale: Locale }) {
         </section>
 
         <nav className="landing-actions" aria-label={copy.quickLinks}>
+          {firstNewItem ? (
+            <Link
+              className="landing-link landing-link-seasonal"
+              href={`${menuPath}#${firstNewItem._id}`}
+              aria-label={`${copy.newAutumnMenu}: ${firstNewItem.name}`}
+            >
+              <Image
+                src="/menu/autumn-bar-menu.jpg"
+                alt=""
+                fill
+                priority
+                sizes="(max-width: 460px) 100vw, 460px"
+              />
+              <span className="landing-link-seasonal-copy">{copy.newAutumnMenu}</span>
+              <span className="landing-link-seasonal-index" aria-hidden="true">{actionNumber(0)}</span>
+            </Link>
+          ) : null}
           <Link className="landing-link landing-link-primary" href={menuPath}>
-            <span>Menu</span><span aria-hidden="true">/01</span>
+            <span>Menu</span><span aria-hidden="true">{actionNumber(1)}</span>
           </Link>
           {settings.mapUrl ? (
             <a className="landing-link" href={settings.mapUrl} target="_blank" rel="noreferrer">
-              <span>Google Maps</span><span aria-hidden="true">/02</span>
+              <span>Google Maps</span><span aria-hidden="true">{actionNumber(2)}</span>
             </a>
           ) : null}
           {settings.instagramUrl ? (
             <a className="landing-link" href={settings.instagramUrl} target="_blank" rel="noreferrer">
-              <span>Instagram</span><span aria-hidden="true">/03</span>
+              <span>Instagram</span><span aria-hidden="true">{actionNumber(3)}</span>
             </a>
           ) : null}
           <a className="landing-link landing-link-tip" href="https://globaltips.io/t/313459?app" target="_blank" rel="noreferrer">
-            <span>{copy.leaveTip}</span><span aria-hidden="true">/04</span>
+            <span>{copy.leaveTip}</span><span aria-hidden="true">{actionNumber(4)}</span>
           </a>
         </nav>
 
