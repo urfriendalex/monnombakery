@@ -3,8 +3,12 @@ import Image from "next/image";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { ui, type Locale } from "@/lib/i18n";
 
+const FALLBACK_PHONE = "+48 800 071 475";
+
 export function Footer({ settings, locale, path }: { settings: RestaurantSettings; locale: Locale; path: "/" | "/menu" }) {
   const copy = ui[locale];
+  const phone = settings.phone?.trim() || FALLBACK_PHONE;
+  const phoneHref = `tel:${phone.replace(/[^\d+]/g, "")}`;
   return (
     <div className="footer-shell">
       <div className="footer-tear" aria-hidden="true" />
@@ -29,6 +33,9 @@ export function Footer({ settings, locale, path }: { settings: RestaurantSetting
                 Instagram
               </a>
             ) : null}
+            <a className="footer-phone" href={phoneHref}>
+              {phone}
+            </a>
           </section>
         </div>
 

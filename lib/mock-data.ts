@@ -10,6 +10,7 @@ export const mockMenuData: MenuPageData = {
     description: "Bakery, śniadania, kawa.",
     address: "Poznańska 13, 00-680 Warszawa",
     mapUrl: "https://maps.app.goo.gl/Fo9i1xuErkMAw6e66?g_st=ic",
+    phone: "+48 800 071 475",
     instagramUrl: "https://www.instagram.com/monnom_bakery?igsh=MW5kMHBnaGJwNXljbw==",
     openingHoursWeekdays: "8:30 - 18:00",
     openingHoursWeekend: "9:00 - 18:00",
