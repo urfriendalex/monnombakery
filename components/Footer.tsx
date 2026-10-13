@@ -27,7 +27,7 @@ export function Footer({ settings, locale, path }: { settings: RestaurantSetting
             ) : null}
           </section>
           <section aria-labelledby="social-heading">
-            <h2 id="social-heading">Social</h2>
+            <h2 id="social-heading">{copy.socialContact}</h2>
             {settings.instagramUrl ? (
               <a href={settings.instagramUrl} target="_blank" rel="noreferrer">
                 Instagram
